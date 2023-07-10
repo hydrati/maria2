@@ -44,7 +44,7 @@ export type Aria2SystemMethod =
 
 export type Aria2ClientGid = string
 
-export type Aria2ServerOpResultOk = string
+export type Aria2ServerOpResultOk = 'OK'
 
 export type Aria2ServerOpResult<E = unknown> = RpcResult<
   Aria2ServerOpResultOk,
