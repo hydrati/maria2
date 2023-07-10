@@ -1,4 +1,4 @@
-import type { Aria2ServerOpResult, Aria2ServerVoidCall } from './client'
+import type { Aria2ServerOpResult, Aria2ServerVoidCall } from './utils'
 import type { RpcResult } from './jsonrpc'
 
 export interface Aria2ServerVersion {
@@ -23,7 +23,7 @@ export interface Aria2ServerGlobalStat {
   /**
    * Overall download speed (byte/sec).
    *
-   * This number can be too large, it should parse with `BigInt`.
+   * This number can be too large, you should parse with `BigInt`.
    * @public
    */
   downloadSpeed: string
@@ -31,7 +31,7 @@ export interface Aria2ServerGlobalStat {
   /**
    * Overall upload speed (byte/sec).
    *
-   * This number can be too large, it should parse with `BigInt`.
+   * This number can be too large, you should parse with `BigInt`.
    * @public
    */
   uploadSpeed: string

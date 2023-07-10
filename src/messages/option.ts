@@ -1,9 +1,9 @@
+import type { Aria2ClientGid } from './client'
 import type {
-  Aria2ClientGid,
   Aria2ClientGidOpCall,
   Aria2ServerOpResult,
   Aria2ServerVoidCall,
-} from './client'
+} from './utils'
 import type { RpcCall, RpcResult } from './jsonrpc'
 
 export type Aria2ClientInputOptionKey =
