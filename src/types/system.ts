@@ -28,7 +28,9 @@ export type Aria2SystemMulticallParamItem = {
   >
 }[keyof Aria2RpcMethodCallMap]
 
-export type Aria2SystemMulticallParams = Array<Aria2SystemMulticallParamItem>
+export type Aria2SystemMulticallParams =
+  | [Aria2SystemMulticallParamItem]
+  | Array<Aria2SystemMulticallParamItem>
 
 export type Aria2SystemMulticallCall = RpcCall<
   'system.multicall',
