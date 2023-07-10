@@ -4,6 +4,12 @@
     "module": "esnext",
     "lib": ["esnext"],
     "moduleResolution": "node",
+    "typeRoots": [
+      "./src/types"
+    ],
+    "types": [
+      "maria2"
+    ],
     "esModuleInterop": true,
     "strict": true,
     "strictNullChecks": true,
