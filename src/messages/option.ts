@@ -138,11 +138,11 @@ export type Aria2ClientGlobalOptionKey =
     >
 
 export type Aria2ClientInputOptions = Partial<
-  Record<Aria2ClientInputOptionKey, boolean | number | string>
+  Record<Aria2ClientInputOptionKey, string>
 >
 
 export type Aria2ClientGlobalOptions = Partial<
-  Record<Aria2ClientGlobalOptionKey, boolean | number | string>
+  Record<Aria2ClientGlobalOptionKey, string>
 >
 
 export type Aria2ChangeOptionOpResult = string
