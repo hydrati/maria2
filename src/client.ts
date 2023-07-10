@@ -82,17 +82,12 @@ type ClientAria2Notification = {
     T extends (...args: Aria2ClientNotificationParams) => void,
   >(
     conn: Conn,
-    listener: (...args: Aria2ClientNotificationParams) => void
+    listener: T
   ) => Disposable<T>
 } & {
-  when: <
-    T extends (
-      conn: Conn,
-      method: Aria2ClientNotificationMethod,
-      listener: (...args: Aria2ClientNotificationParams) => void
-    ) => void,
-  >(
-    type: Aria2ClientNotificationMethod,
+  when: <T extends (...args: Aria2ClientNotificationParams) => void>(
+    conn: Conn,
+    method: Aria2ClientNotificationMethod,
     listener: T
   ) => Disposable<T>
 }
