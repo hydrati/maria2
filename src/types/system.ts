@@ -39,6 +39,6 @@ export type Aria2SystemMulticallResult = RpcResult<unknown[]>
 
 export type Aria2SystemMulticallParamsToResult<
   T extends Aria2SystemMulticallParams,
-> = {
+> = RpcResult<{
   [P in keyof T]: Aria2RpcMethodResultMap[T[P]['methodName']]
-}
+}>

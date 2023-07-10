@@ -82,7 +82,10 @@ import type {
   Aria2SystemMulticallResult,
 } from './system'
 
-export interface Aria2RpcMethodCallMap {
+export type Aria2RpcMethodCallMap = Aria2ClientMethodCallMap &
+  Aria2SystemMethodCallMap
+
+export interface Aria2ClientMethodCallMap {
   'aria2.changeOption': Aria2ChangeOptionCall
   'aria2.changeGlobalOption': Aria2ChangeGlobalOptionCall
   'aria2.getGlobalOption': Aria2GetGlobalOptionCall
@@ -101,10 +104,12 @@ export interface Aria2RpcMethodCallMap {
   'aria2.getFiles': Aria2GetFilesCall
   'aria2.getUris': Aria2GetUrisCall
   'aria2.getServers': Aria2GetServersCall
+
   'aria2.tellStatus': Aria2TellStatusCall
   'aria2.tellWaiting': Aria2TellWaitingCall
   'aria2.tellStopped': Aria2TellStoppedCall
   'aria2.tellActive': Aria2TellActiveCall
+
   'aria2.remove': Aria2RemoveCall
   'aria2.forceRemove': Aria2ForceRemoveCall
   'aria2.pause': Aria2PauseCall
@@ -116,12 +121,24 @@ export interface Aria2RpcMethodCallMap {
   'aria2.addMetalink': Aria2AddMetalinkCall
   'aria2.addTorrent': Aria2AddTorrentCall
   'aria2.addUri': Aria2AddUriCall
+}
+
+export interface Aria2SystemMethodCallMap {
   'system.multicall': Aria2SystemMulticallCall
   'system.listMethods': Aria2SystemListMethodsCall
   'system.listNotifications': Aria2SystemListNotificationsCall
 }
 
-export interface Aria2RpcMethodResultMap {
+export type Aria2RpcMethodResultMap = Aria2SystemMethodResultMap &
+  Aria2ClientMethodResultMap
+
+export interface Aria2SystemMethodResultMap {
+  'system.multicall': Aria2SystemMulticallResult
+  'system.listMethods': Aria2SystemListMethodsResult
+  'system.listNotifications': Aria2SystemListNotificationsResult
+}
+
+export interface Aria2ClientMethodResultMap {
   'aria2.changeOption': Aria2ChangeOptionResult
   'aria2.changeGlobalOption': Aria2ChangeGlobalOptionResult
   'aria2.getGlobalOption': Aria2GetGlobalOptionResult
@@ -155,9 +172,6 @@ export interface Aria2RpcMethodResultMap {
   'aria2.addMetalink': Aria2AddMetalinkResult
   'aria2.addTorrent': Aria2AddTorrentResult
   'aria2.addUri': Aria2AddUriResult
-  'system.multicall': Aria2SystemMulticallResult
-  'system.listMethods': Aria2SystemListMethodsResult
-  'system.listNotifications': Aria2SystemListNotificationsResult
 }
 
 export type Aria2RpcMethod = keyof Aria2RpcMethodCallMap

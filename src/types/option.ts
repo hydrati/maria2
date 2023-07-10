@@ -1,4 +1,4 @@
-import type { Aria2ClientGid } from './client'
+import type { Aria2DownloadGid } from './download'
 import type {
   Aria2ClientGidOpCall,
   Aria2ServerOpResult,
@@ -148,7 +148,7 @@ export type Aria2ClientGlobalOptions = Partial<
 export type Aria2ChangeOptionOpResult = string
 
 export type Aria2ChangeOptionParams = [
-  gid: Aria2ClientGid,
+  gid: Aria2DownloadGid,
   options: Aria2ClientInputOptions,
 ]
 

@@ -1,4 +1,4 @@
-import type { Aria2ClientGid } from './client'
+import type { Aria2DownloadGid } from './download'
 import type { RpcCall } from './jsonrpc'
 
 export type Aria2ClientNotificationMethod =
@@ -10,7 +10,7 @@ export type Aria2ClientNotificationMethod =
   | 'aria2.onBtDownloadComplete'
 
 export interface Aria2ClientNotificationParams {
-  gid: Aria2ClientGid
+  gid: Aria2DownloadGid
 }
 
 export type Aria2ClientNotificationCall = RpcCall<

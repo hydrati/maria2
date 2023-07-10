@@ -13,14 +13,7 @@ export interface RpcCall<TMethod extends RpcMethod = string, TParam = unknown>
   params: TParam
 }
 
-export interface RpcResultOk<T> extends RpcMessage {
-  result: T
+export interface RpcResult<T = unknown, E = unknown> extends RpcMessage {
+  result?: T
+  error?: E
 }
-
-export interface RpcResultErr<E> extends RpcMessage {
-  error: E
-}
-
-export type RpcResult<T = unknown, E = unknown> =
-  | RpcResultOk<T>
-  | RpcResultErr<E>
