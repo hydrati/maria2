@@ -1,6 +1,6 @@
 import type { Aria2ServerVoidCall } from './client'
 import type { RpcCall, RpcResult } from './jsonrpc'
-import type { Aria2RpcMethodCallMap } from './method'
+import type { Aria2RpcMethodCallMap, Aria2RpcMethodResultMap } from './method'
 
 export type Aria2SystemListNotificationsCall =
   Aria2ServerVoidCall<'system.listNotifications'>
@@ -32,3 +32,9 @@ export type Aria2SystemMulticallCall = RpcCall<
 >
 
 export type Aria2SystemMulticallResult = RpcResult<unknown[]>
+
+export type Aria2SystemMulticallParamsMapResult<
+  T extends Aria2SystemMulticallParams,
+> = {
+  [P in keyof T]: Aria2RpcMethodResultMap[T[P]['methodName']]
+}
