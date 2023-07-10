@@ -1,4 +1,4 @@
-import type { Aria2ClientGid } from './client'
+import type { Aria2DownloadGid } from './download'
 import type { RpcCall, RpcResult } from './jsonrpc'
 import type { Aria2RpcMethod } from './method'
 
@@ -13,7 +13,7 @@ export type Aria2ServerOpResult<E = unknown> = RpcResult<
   E
 >
 
-export type Aria2ClientGidOpParams = [gid: Aria2ClientGid]
+export type Aria2ClientGidOpParams = [gid: Aria2DownloadGid]
 export type Aria2ClientGidOpCall<T extends Aria2RpcMethod> = RpcCall<
   T,
   Aria2ClientGidOpParams

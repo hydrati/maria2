@@ -1,4 +1,3 @@
-import type { Aria2ClientGid } from './client'
 import type { RpcCall, RpcResult } from './jsonrpc'
 import { Aria2ClientInputOptions } from './option'
 import type {
@@ -7,6 +6,8 @@ import type {
   Aria2ServerOpResult,
   Aria2ServerVoidCall,
 } from './utils'
+
+export type Aria2DownloadGid = string
 
 export type Aria2PurgeDownloadResultCall =
   Aria2ServerVoidCall<'aria2.purgeDownloadResult'>
@@ -19,7 +20,7 @@ export type Aria2RemoveDownloadResultCall =
 export type Aria2RemoveDownloadResultResult = Aria2ServerOpResult
 
 export type Aria2ChangeUriParams = [
-  gid: Aria2ClientGid,
+  gid: Aria2DownloadGid,
   fileIndex: number,
   delUris: string[],
   addUris: string[],
@@ -38,7 +39,7 @@ export type Aria2ChangeUriResult = RpcResult<Aria2ChangeUriResultOk>
 export type Aria2PositionHow = 'POS_CUR' | 'POS_SET' | 'POS_END'
 
 export type Aria2ChangePositionParams = [
-  gid: Aria2ClientGid,
+  gid: Aria2DownloadGid,
   pos: number,
   how: Aria2PositionHow,
 ]
@@ -298,7 +299,7 @@ export interface Aria2DownloadStatus {
    * GID of the download.
    * @public
    */
-  gid: Aria2ClientGid
+  gid: Aria2DownloadGid
 
   /**
    * - `active` for currently downloading/seeding downloads.
@@ -424,13 +425,13 @@ export interface Aria2DownloadStatus {
    * If there are no such downloads, this key will not be included in the response.
    * @public
    */
-  followedBy?: Aria2ClientGid[]
+  followedBy?: Aria2DownloadGid[]
   /**
    * The reverse link for `followedBy`.
    * A download included in `followedBy` has this object's GID in its `following` value.
    * @public
    */
-  following?: Aria2ClientGid
+  following?: Aria2DownloadGid
 
   /**
    * GID of a parent download.
@@ -439,7 +440,7 @@ export interface Aria2DownloadStatus {
    * If this download has no parent, this key will not be included in the response.
    * @public
    */
-  belongsTo?: Aria2ClientGid
+  belongsTo?: Aria2DownloadGid
 
   /**
    * Directory to save files.
@@ -462,7 +463,7 @@ export interface Aria2DownloadStatus {
 }
 
 export type Aria2TellStatusParams = [
-  gid: Aria2ClientGid,
+  gid: Aria2DownloadGid,
   keys?: [keyof Aria2DownloadStatus] | (keyof Aria2DownloadStatus)[],
 ]
 
@@ -530,23 +531,23 @@ export type Aria2TellActiveResult = RpcResult<Partial<Aria2DownloadStatus>[]>
 
 export type Aria2RemoveCall = Aria2ClientGidOpCall<'aria2.remove'>
 
-export type Aria2RemoveResult = RpcResult<Aria2ClientGid>
+export type Aria2RemoveResult = RpcResult<Aria2DownloadGid>
 
 export type Aria2ForceRemoveCall = Aria2ClientGidOpCall<'aria2.forceRemove'>
 
-export type Aria2ForceRemoveResult = RpcResult<Aria2ClientGid>
+export type Aria2ForceRemoveResult = RpcResult<Aria2DownloadGid>
 
 export type Aria2PauseCall = Aria2ClientGidOpCall<'aria2.pause'>
 
-export type Aria2PauseResult = RpcResult<Aria2ClientGid>
+export type Aria2PauseResult = RpcResult<Aria2DownloadGid>
 
 export type Aria2ForcePauseCall = Aria2ClientGidOpCall<'aria2.forcePause'>
 
-export type Aria2ForcePauseResult = RpcResult<Aria2ClientGid>
+export type Aria2ForcePauseResult = RpcResult<Aria2DownloadGid>
 
 export type Aria2UnpauseCall = Aria2ClientGidOpCall<'aria2.unpause'>
 
-export type Aria2UnpauseResult = RpcResult<Aria2ClientGid>
+export type Aria2UnpauseResult = RpcResult<Aria2DownloadGid>
 
 export type Aria2PauseAllCall = Aria2ClientGidOpCall<'aria2.pauseAll'>
 
@@ -571,7 +572,7 @@ export type Aria2AddMetalinkCall = RpcCall<
   Aria2AddMetalinkParams
 >
 
-export type Aria2AddMetalinkResult = RpcResult<Aria2ClientGid>
+export type Aria2AddMetalinkResult = RpcResult<Aria2DownloadGid>
 
 export type Aria2AddTorrentParams = [
   torrent: string,
@@ -585,7 +586,7 @@ export type Aria2AddTorrentCall = RpcCall<
   Aria2AddTorrentParams
 >
 
-export type Aria2AddTorrentResult = RpcResult<Aria2ClientGid>
+export type Aria2AddTorrentResult = RpcResult<Aria2DownloadGid>
 
 export type Aria2AddUriParams = [
   uris: string[],
@@ -595,4 +596,4 @@ export type Aria2AddUriParams = [
 
 export type Aria2AddUriCall = RpcCall<'aria2.addUri', Aria2AddUriParams>
 
-export type Aria2AddUriResult = RpcResult<Aria2ClientGid>
+export type Aria2AddUriResult = RpcResult<Aria2DownloadGid>
