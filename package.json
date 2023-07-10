@@ -50,6 +50,7 @@
   "packageManager": "pnpm@8.6.7",
   "devDependencies": {
     "@types/node": "^20.4.1",
+    "@types/ws": "^8.5.5",
     "bumpp": "^9.1.1",
     "prettier": "^3.0.0",
     "typescript": "^5.1.6",

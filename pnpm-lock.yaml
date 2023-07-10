@@ -13,6 +13,9 @@ devDependencies:
   '@types/node':
     specifier: ^20.4.1
     version: 20.4.1
+  '@types/ws':
+    specifier: ^8.5.5
+    version: 8.5.5
   bumpp:
     specifier: ^9.1.1
     version: 9.1.1
@@ -830,6 +833,12 @@ packages:
 
   /@types/resolve@1.20.2:
     resolution: {integrity: sha512-60BCwRFOZCQhDncwQdxxeOEEkbc5dIMccYLwbxsS4TUNeVECQ/pBJ0j09mrHOl/JJvpRPGwO9SvE4nR2Nb/a4Q==}
+    dev: true
+
+  /@types/ws@8.5.5:
+    resolution: {integrity: sha512-lwhs8hktwxSjf9UaZ9tG5M03PGogvFaH8gUgLNbN9HKIg0dvv6q+gkSuJ8HN4/VbyxkuLzCjlN7GquQ0gUJfIg==}
+    dependencies:
+      '@types/node': 20.4.1
     dev: true
 
   /@vitest/expect@0.33.0:
