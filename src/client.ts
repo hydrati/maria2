@@ -1,4 +1,8 @@
-import { Conn } from './conn'
+import type {
+  Aria2ClientNotificationParams,
+  Aria2ClientNotificationMethod,
+} from './types/notification'
+import type { Conn } from './conn'
 import type {
   Aria2TellActiveParams,
   Aria2TellStatusListParams,
@@ -16,7 +20,7 @@ import type {
   Aria2SystemMulticallParams,
   Aria2SystemMulticallParamsToResult,
 } from './types/system'
-import type { TrimStart } from './utils'
+import type { Disposable, TrimStart } from './utils'
 
 type ClientAria2Common = {
   [P in TrimStart<
@@ -73,61 +77,29 @@ type ClientSystemCommon = {
   ) => Promise<NonNullable<Aria2SystemMethodResultMap[`system.${P}`]['result']>>
 }
 
+type ClientAria2Notification = {
+  [P in TrimStart<Aria2ClientNotificationMethod, 'aria2.'>]: <
+    T extends (...args: Aria2ClientNotificationParams) => void,
+  >(
+    conn: Conn,
+    listener: (...args: Aria2ClientNotificationParams) => void
+  ) => Disposable<T>
+} & {
+  when: <
+    T extends (
+      conn: Conn,
+      method: Aria2ClientNotificationMethod,
+      listener: (...args: Aria2ClientNotificationParams) => void
+    ) => void,
+  >(
+    type: Aria2ClientNotificationMethod,
+    listener: T
+  ) => Disposable<T>
+}
+
 export type ClientSystem = ClientSystemCommon & ClientSystemMulticall
 
 export type ClientAria2 = ClientAria2Common &
   ClientAria2TellStatus &
-  ClientAria2TellStatusList
-
-export const system = Object.freeze(
-  ['system.multicall', 'system.listMethods', 'system.listNotifications'].reduce(
-    (o, k) => {
-      o[k.slice(7)] = (conn: Conn, ...args: unknown[]) =>
-        conn.sendRequest(k, ...args)
-      return o
-    },
-    Object.create(null)
-  )
-) as Readonly<ClientSystem>
-
-export const aria2 = Object.freeze(
-  [
-    'aria2.changeOption',
-    'aria2.changeGlobalOption',
-    'aria2.getGlobalOption',
-    'aria2.getOption',
-    'aria2.getSessionInfo',
-    'aria2.shutdown',
-    'aria2.forceShutdown',
-    'aria2.saveSession',
-    'aria2.getGlobalStat',
-    'aria2.getVersion',
-    'aria2.purgeDownloadResult',
-    'aria2.removeDownloadResult',
-    'aria2.changeUri',
-    'aria2.changePosition',
-    'aria2.getPeers',
-    'aria2.getFiles',
-    'aria2.getUris',
-    'aria2.getServers',
-    'aria2.tellStatus',
-    'aria2.tellWaiting',
-    'aria2.tellStopped',
-    'aria2.tellActive',
-    'aria2.remove',
-    'aria2.forceRemove',
-    'aria2.pause',
-    'aria2.forcePause',
-    'aria2.unpause',
-    'aria2.unpauseAll',
-    'aria2.pauseAll',
-    'aria2.forcePauseAll',
-    'aria2.addMetalink',
-    'aria2.addTorrent',
-    'aria2.addUri',
-  ].reduce((o, k) => {
-    o[k.slice(6)] = (conn: Conn, ...args: unknown[]) =>
-      conn.sendRequest(k, ...args)
-    return o
-  }, Object.create(null))
-) as Readonly<ClientAria2>
+  ClientAria2TellStatusList &
+  ClientAria2Notification

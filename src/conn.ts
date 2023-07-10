@@ -5,9 +5,12 @@ export interface Socket {
    * - `0` if the socket is connecting.
    * - `1` if the socket is open.
    * - `2` if the socket is closing or closed.
+   * @public
    */
   readyState: number
+
   send(data: string): void
+
   addEventListener(
     type: 'message',
     listener: (event: { data: any }) => void

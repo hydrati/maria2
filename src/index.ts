@@ -1,5 +1,4 @@
-export { aria2, system } from './client'
-export { openAsync } from './open'
+export { openAsync, aria2, system } from './open'
 export type { ClientAria2, ClientSystem } from './client'
 export type { Conn, Socket } from './conn'
 export type { Disposable } from './utils'

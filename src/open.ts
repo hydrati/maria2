@@ -1,4 +1,5 @@
-import { Conn, Socket } from './conn'
+import type { ClientAria2, ClientSystem } from './client'
+import type { Conn, Socket } from './conn'
 import { once, type Disposable } from './utils'
 
 export const openAsync = async (
@@ -107,3 +108,72 @@ export const openAsync = async (
     },
   }
 }
+
+export const system = Object.freeze(
+  ['system.multicall', 'system.listMethods', 'system.listNotifications'].reduce(
+    (o, k) => {
+      o[k.slice(7)] = (conn: Conn, ...args: unknown[]) =>
+        conn.sendRequest(k, ...args)
+      return o
+    },
+    Object.create(null)
+  )
+) as Readonly<ClientSystem>
+
+export const aria2 = Object.freeze(
+  Object.assign(
+    {
+      when: (conn: Conn, t: string, h: any) => conn.onNotification(t, h),
+    },
+    [
+      'aria2.changeOption',
+      'aria2.changeGlobalOption',
+      'aria2.getGlobalOption',
+      'aria2.getOption',
+      'aria2.getSessionInfo',
+      'aria2.shutdown',
+      'aria2.forceShutdown',
+      'aria2.saveSession',
+      'aria2.getGlobalStat',
+      'aria2.getVersion',
+      'aria2.purgeDownloadResult',
+      'aria2.removeDownloadResult',
+      'aria2.changeUri',
+      'aria2.changePosition',
+      'aria2.getPeers',
+      'aria2.getFiles',
+      'aria2.getUris',
+      'aria2.getServers',
+      'aria2.tellStatus',
+      'aria2.tellWaiting',
+      'aria2.tellStopped',
+      'aria2.tellActive',
+      'aria2.remove',
+      'aria2.forceRemove',
+      'aria2.pause',
+      'aria2.forcePause',
+      'aria2.unpause',
+      'aria2.unpauseAll',
+      'aria2.pauseAll',
+      'aria2.forcePauseAll',
+      'aria2.addMetalink',
+      'aria2.addTorrent',
+      'aria2.addUri',
+    ].reduce<any>((o, k) => {
+      o[k.slice(6)] = (conn: Conn, ...args: unknown[]) =>
+        conn.sendRequest(k, ...args)
+      return o
+    }, {}),
+    [
+      'aria2.onDownloadStart',
+      'aria2.onDownloadPause',
+      'aria2.onDownloadStop',
+      'aria2.onDownloadComplete',
+      'aria2.onDownloadError',
+      'aria2.onBtDownloadComplete',
+    ].reduce<any>((o, k) => {
+      o[k.slice(6)] = (conn: Conn, h: any) => conn.onNotification(k, h)
+      return o
+    }, {})
+  )
+) as Readonly<ClientAria2>
