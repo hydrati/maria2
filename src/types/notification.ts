@@ -9,9 +9,13 @@ export type Aria2ClientNotificationMethod =
   | 'aria2.onDownloadError'
   | 'aria2.onBtDownloadComplete'
 
-export interface Aria2ClientNotificationParams {
+export interface Aria2ClientNotification {
   gid: Aria2DownloadGid
 }
+
+export type Aria2ClientNotificationParams = [
+  notification: Aria2ClientNotification,
+]
 
 export type Aria2ClientNotificationCall = RpcCall<
   Aria2ClientNotificationMethod,
