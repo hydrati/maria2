@@ -1,4 +1,5 @@
 export { openAsync, aria2, system } from './open'
+export { createHTTP, createWebSocket } from './transport'
 export type { ClientAria2, ClientSystem } from './client'
 export type { Conn, Socket } from './conn'
 export type { Disposable } from './utils'
