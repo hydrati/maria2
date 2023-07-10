@@ -22,40 +22,42 @@ export type Aria2GetVersionResult = RpcResult<Aria2ServerVersion>
 export interface Aria2ServerGlobalStat {
   /**
    * Overall download speed (byte/sec).
+   *
+   * This number can be too large, it should parse with `BigInt`.
    * @public
    */
-  downloadSpeed: number
+  downloadSpeed: string
 
   /**
-   * Overall upload speed(byte/sec).
+   * Overall upload speed (byte/sec).
+   *
+   * This number can be too large, it should parse with `BigInt`.
    * @public
    */
-  uploadSpeed: number
+  uploadSpeed: string
 
   /**
    * The number of active downloads.
    * @public
    */
-  numActive: number
-
+  numActive: string
   /**
    * The number of waiting downloads.
    * @public
    */
-  numWaiting: number
-
+  numWaiting: string
   /**
    * The number of stopped downloads in the current session.
    * This value is capped by the `--max-download-result` option.
    * @public
    */
-  numStopped: number
+  numStopped: string
 
   /**
    * The number of stopped downloads in the current session and not capped by the `--max-download-result` option.
    * @public
    */
-  numStoppedTotal: number
+  numStoppedTotal: string
 }
 
 export type Aria2GetGlobalStatCall = Aria2ServerVoidCall<'aria2.getGlobalStat'>
