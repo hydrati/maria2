@@ -8,10 +8,7 @@ export interface Aria2StringUtf8 {
 
 export type Aria2ServerOpResultOk = 'OK'
 
-export type Aria2ServerOpResult<E = unknown> = RpcResult<
-  Aria2ServerOpResultOk,
-  E
->
+export type Aria2ServerOpResult = RpcResult<Aria2ServerOpResultOk>
 
 export type Aria2ClientGidOpParams = [gid: Aria2DownloadGid]
 export type Aria2ClientGidOpCall<T extends Aria2RpcMethod> = RpcCall<
