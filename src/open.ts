@@ -142,7 +142,7 @@ export const system = Object.freeze(
           return conn.sendRequest(
             false,
             'system.multicall',
-            ...args.map((v) => {
+            args.map((v) => {
               const obj = Object.assign({}, v)
               obj.params = [`token:${secret}`, ...obj.params]
               return obj
@@ -150,7 +150,7 @@ export const system = Object.freeze(
           )
         }
 
-        return conn.sendRequest(false, 'system.multicall', ...args)
+        return conn.sendRequest(false, 'system.multicall', args)
       },
     },
     ['system.listMethods', 'system.listNotifications'].reduce(
