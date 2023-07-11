@@ -1,4 +1,3 @@
-import { WebSocket } from 'isomorphic-ws'
 import type { Socket } from './conn'
 
 export type Aria2RpcWebSocketUrl =
@@ -8,14 +7,26 @@ export type Aria2RpcHTTPUrl =
   | `${'http' | 'https'}://${string}:${number}/jsonrpc`
   | `${'http' | 'https'}://${string}/jsonrpc`
 
-export const createWebSocket = (url: Aria2RpcWebSocketUrl) =>
-  new WebSocket(url) as Socket
+const _WebSocket = globalThis.WebSocket ?? globalThis?.require?.('ws')
+const _fetch = globalThis.fetch ?? globalThis?.require?.('cross-fetch')
+
+export const createWebSocket = (url: Aria2RpcWebSocketUrl) => {
+  if (_WebSocket == null) {
+    throw new Error('Not Found WebSocket() in globalThis or require()')
+  }
+
+  return new _WebSocket(url) as Socket
+}
 
 export const createHTTP = (url: Aria2RpcHTTPUrl) => {
+  if (_fetch == null) {
+    throw new Error('Not Found fetch() in globalThis or require()')
+  }
+
   return new (class extends EventTarget {
     readyState: number = 1
     send(data: string): void {
-      fetch(url, {
+      _fetch(url, {
         method: 'POST',
         body: data,
         headers: new Headers(),

@@ -50,19 +50,21 @@
   "packageManager": "pnpm@8.6.7",
   "devDependencies": {
     "@types/node": "^20.4.1",
-    "@types/ws": "^8.5.5",
     "bumpp": "^9.1.1",
+    "cross-fetch": "*",
     "prettier": "^3.0.0",
     "typescript": "^5.1.6",
     "unbuild": "^1.2.1",
     "vite": "^4.4.2",
-    "vitest": "^0.33.0"
-  },
-  "dependencies": {
-    "isomorphic-ws": "^5.0.0"
+    "vitest": "^0.33.0",
+    "ws": "*"
   },
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.com"
+  },
+  "peerDependencies": {
+    "cross-fetch": "*",
+    "ws": "*"
   }
 }
