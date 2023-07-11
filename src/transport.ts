@@ -11,13 +11,14 @@ export type Aria2RpcHTTPUrl =
 export const createWebSocket = (url: Aria2RpcWebSocketUrl) =>
   new WebSocket(url) as Socket
 
-export const createHTTP = (url: Aria2RpcHTTPUrl) =>
-  new (class extends EventTarget {
+export const createHTTP = (url: Aria2RpcHTTPUrl) => {
+  return new (class extends EventTarget {
     readyState: number = 1
     send(data: string): void {
       fetch(url, {
         method: 'POST',
         body: data,
+        headers: new Headers(),
       }).then((v) => {
         if (v.ok) {
           v.text().then((v) =>
@@ -27,3 +28,4 @@ export const createHTTP = (url: Aria2RpcHTTPUrl) =>
       })
     }
   })() as unknown as Socket
+}

@@ -85,7 +85,8 @@ export const openAsync = async (
   socket.addEventListener('message', handleMessage)
 
   return {
-    sendRequest: (method: string, ...params: any[]) =>
+    getSecret: () => secret,
+    sendRequest: (useSecret: boolean, method: string, ...params: any[]) =>
       new Promise((onResolve, onReject) => {
         if (socket.readyState != 1) {
           return onReject(new Error('Socket is not open'))
@@ -98,7 +99,10 @@ export const openAsync = async (
           jsonrpc: '2.0',
           id,
           method,
-          params: secret !== null ? [secret, params] : params,
+          params:
+            secret != null && useSecret
+              ? [`token:${secret}`, ...params]
+              : params,
         } satisfies RpcCall)
 
         try {
@@ -129,13 +133,34 @@ export const openAsync = async (
 }
 
 export const system = Object.freeze(
-  ['system.multicall', 'system.listMethods', 'system.listNotifications'].reduce(
-    (obj, methodName) => {
-      obj[methodName.slice(7)] = (conn: Conn, ...args: unknown[]) =>
-        conn.sendRequest(methodName, ...args)
-      return obj
+  Object.assign(
+    {
+      multicall: (conn: Conn, ...args: any[]) => {
+        const secret = conn.getSecret()
+
+        if (secret != null) {
+          return conn.sendRequest(
+            false,
+            'system.multicall',
+            ...args.map((v) => {
+              const obj = Object.assign({}, v)
+              obj.params = [`token:${secret}`, ...obj.params]
+              return obj
+            })
+          )
+        }
+
+        return conn.sendRequest(false, 'system.multicall', ...args)
+      },
     },
-    {} as any
+    ['system.listMethods', 'system.listNotifications'].reduce(
+      (obj, methodName) => {
+        obj[methodName.slice(7)] = (conn: Conn, ...args: unknown[]) =>
+          conn.sendRequest(false, methodName, ...args)
+        return obj
+      },
+      {} as any
+    )
   )
 ) as Readonly<ClientSystem>
 
@@ -181,7 +206,7 @@ export const aria2 = Object.freeze(
       'aria2.addUri',
     ].reduce((obj, methodName) => {
       obj[methodName.slice(6)] = (conn: Conn, ...args: unknown[]) =>
-        conn.sendRequest(methodName, ...args)
+        conn.sendRequest(true, methodName, ...args)
       return obj
     }, {} as any),
     [

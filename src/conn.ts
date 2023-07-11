@@ -23,7 +23,12 @@ export interface Socket {
 }
 
 export interface Conn {
-  sendRequest<T>(method: string, ...args: any[]): PromiseLike<T>
+  sendRequest<T>(
+    useSecret: boolean,
+    method: string,
+    ...args: any[]
+  ): PromiseLike<T>
+  getSecret(): string | undefined
   onNotification<T extends (...args: unknown[]) => void>(
     type: string,
     listener: T
