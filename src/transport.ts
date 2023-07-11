@@ -1,4 +1,4 @@
-import type { Socket } from './conn'
+import { ReadyState, type Socket } from './conn'
 import { WebSocket, fetch } from './utils'
 
 export type Aria2RpcWebSocketUrl =
@@ -22,7 +22,10 @@ export const createHTTP = (url: Aria2RpcHTTPUrl) => {
   }
 
   return new (class extends EventTarget {
-    readyState: number = 1
+    readyState: ReadyState = ReadyState.Open
+
+    close(): void {}
+
     send(data: string): void {
       fetch(url, {
         method: 'POST',

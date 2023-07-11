@@ -15,9 +15,11 @@ export const once = <T extends unknown[], R>(
 }
 
 export const WebSocket = (() =>
+  // @ts-ignore
   globalThis.WebSocket ?? globalThis?.require?.('ws'))()
 
 export const fetch = (() =>
+  // @ts-ignore
   globalThis.fetch ?? globalThis?.require?.('cross-fetch'))()
 
 export const randomUUID = ((): (() => string) => {
@@ -25,10 +27,12 @@ export const randomUUID = ((): (() => string) => {
     return () => globalThis.crypto.randomUUID()
   } else {
     const nodeCryptoUUID =
+      // @ts-ignore
       globalThis?.require?.('crypto')?.webcrypto?.randomUUID
     if (nodeCryptoUUID != null) {
       return () => nodeCryptoUUID()
     } else {
+      // @ts-ignore
       const uuidV4 = globalThis?.require?.('uuid')?.v4
       if (uuidV4 != null) {
         return () => uuidV4()

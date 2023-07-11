@@ -1,5 +1,5 @@
 import type { ClientAria2, ClientSystem } from './client'
-import type { Conn, Socket } from './conn'
+import { ReadyState, type Conn, type Socket } from './conn'
 import type { RpcCall } from './types'
 import { once, type Disposable } from './utils'
 import { randomUUID } from './utils'
@@ -75,11 +75,13 @@ export const openAsync = async (
     }
   }
 
-  if (socket.readyState == 0) {
+  if (socket.readyState == ReadyState.Connecting) {
     await new Promise((r) =>
       socket.addEventListener('open', () => r(null), { once: true })
     )
-  } else if (socket.readyState == 2) {
+  } else if (socket.readyState == ReadyState.Closing) {
+    throw new Error('Socket is closing')
+  } else if (socket.readyState == ReadyState.Closed) {
     throw new Error('Socket is closed')
   }
 
@@ -89,7 +91,7 @@ export const openAsync = async (
     getSecret: () => secret,
     sendRequest: (useSecret: boolean, method: string, ...params: any[]) =>
       new Promise((onResolve, onReject) => {
-        if (socket.readyState != 1) {
+        if (socket.readyState != ReadyState.Open) {
           return onReject(new Error('Socket is not open'))
         }
 
