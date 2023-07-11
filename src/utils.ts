@@ -14,7 +14,7 @@ export const once = <T extends unknown[], R>(
     triggered ? ret : ((triggered = true), (ret = fn(...args)))
 }
 
-const isNodeEnv = globalThis.global.process.versions.node != null
+const isNodeEnv = globalThis?.global?.process?.versions?.node != null
 
 // @ts-ignore
 export const WebSocket =
@@ -31,8 +31,8 @@ export const randomUUID = await (async () => {
     return () => globalThis.crypto.randomUUID()
   } else {
     if (isNodeEnv) {
-      const webCrypto = (await import('node:crypto')).webcrypto
-      if (webCrypto.randomUUID != null) {
+      const webCrypto = (await import('node:crypto'))?.webcrypto
+      if (webCrypto?.randomUUID != null) {
         return () => webCrypto.randomUUID()
       }
 
