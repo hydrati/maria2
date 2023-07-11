@@ -5,6 +5,13 @@ export default defineBuildConfig({
   declaration: true,
   clean: true,
   rollup: {
-    emitCJS: true,
+    emitCJS: false,
+    esbuild: {
+      minifySyntax: true,
+      minifyWhitespace: true,
+      minifyIdentifiers: true,
+      minify: true,
+      target: 'es2022',
+    },
   },
 })

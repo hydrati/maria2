@@ -2,6 +2,7 @@
   "name": "maria2",
   "version": "0.2.8-beta.2",
   "description": "Simple RPC Library for aria2",
+  "type": "module",
   "keywords": [
     "aria2",
     "download",
@@ -28,12 +29,10 @@
   },
   "exports": {
     ".": {
-      "require": "./dist/index.cjs",
       "import": "./dist/index.mjs",
       "types": "./dist/index.d.ts"
     }
   },
-  "main": "dist/index.cjs",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
   "files": [
@@ -70,5 +69,8 @@
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.com"
+  },
+  "engines": {
+    "node": ">= 14.8.0"
   }
 }
