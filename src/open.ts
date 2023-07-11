@@ -53,7 +53,7 @@ export const open = async (
     const cb = callbacks.get(body.id)
     if (cb) {
       callbacks.delete(body.id)
-      queueMicrotask(() => cb(body.error, body.result))
+      cb(body.error, body.result)
     }
   }
 
