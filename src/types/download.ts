@@ -176,7 +176,7 @@ export interface Aria2PeerInfo {
    * `"true"` if aria2 is choking the peer. Otherwise `"false"`.
    * @public
    */
-  amChoking: 'true' | 'falseA'
+  amChoking: 'true' | 'false'
 
   /**
    * Hexadecimal representation of the download progress of the peer.
