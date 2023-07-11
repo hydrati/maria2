@@ -88,7 +88,9 @@ export const openAsync = async (
   socket.addEventListener('message', handleMessage)
 
   return {
+    getSocket: () => socket,
     getSecret: () => secret,
+
     sendRequest: (useSecret: boolean, method: string, ...params: any[]) =>
       new Promise((onResolve, onReject) => {
         if (socket.readyState != ReadyState.Open) {

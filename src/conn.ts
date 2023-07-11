@@ -7,7 +7,7 @@ export enum ReadyState {
   Connecting = 0,
   Open = 1,
   Closing = 2,
-  Closed = 3
+  Closed = 3,
 }
 
 export interface Socket {
@@ -42,9 +42,11 @@ export interface Conn {
     method: string,
     ...args: any[]
   ): PromiseLike<T>
-  getSecret(): string | undefined
   onNotification<T extends (...args: unknown[]) => void>(
     type: string,
     listener: T
   ): Disposable<T>
+
+  getSecret(): string | undefined
+  getSocket(): Socket
 }
