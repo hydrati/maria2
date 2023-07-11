@@ -29,3 +29,8 @@ jobs:
 
       - name: Build
         run: pnpm build
+
+      - name: Test
+        run: |
+          aria2c --enable-rpc=true --rpc-listen-all=true --rpc-allow-origin-all=true --rpc-listen-port=6800 &
+          pnpm test
