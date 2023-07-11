@@ -21,7 +21,7 @@ export const fetch = (() =>
   globalThis.fetch ?? globalThis?.require?.('cross-fetch'))()
 
 export const randomUUID = ((): (() => string) => {
-  if (globalThis.crypto.randomUUID != null) {
+  if (globalThis?.crypto?.randomUUID != null) {
     return () => globalThis.crypto.randomUUID()
   } else {
     const nodeCryptoUUID =
