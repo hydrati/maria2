@@ -1,4 +1,4 @@
-export { openAsync, aria2, system } from './open'
+export { open, aria2, system } from './open'
 export { createHTTP, createWebSocket } from './transport'
 export { ReadyState } from './conn'
 export type { Aria2RpcHTTPUrl, Aria2RpcWebSocketUrl } from './transport'

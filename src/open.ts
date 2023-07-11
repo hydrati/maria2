@@ -38,7 +38,10 @@ const createCallback = <T>(
     err != null ? onReject(err) : onResolve(ret as T)
 }
 
-export const openAsync = async (
+export const close = (conn: Conn, code?: number, reason?: string) =>
+  conn.getSocket().close(code, reason)
+
+export const open = async (
   socket: Socket,
   secret?: string,
   onMessageError?: (err: unknown) => void
