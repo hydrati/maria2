@@ -34,7 +34,8 @@ export const randomUUID = ((): (() => string) => {
         return () => uuidV4()
       } else {
         console.warn(
-          '[warn] Not Found `crypto.randomUUID()` in this enviroment; switching to fallback (unsafe).'
+          '[warn] Not Found `crypto.randomUUID()` in this enviroment; ' +
+            'switching to fallback (unsafe).'
         )
         let count = 0
         return () => (count += 1).toString()
