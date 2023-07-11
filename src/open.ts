@@ -1,6 +1,6 @@
 import type { ClientAria2, ClientSystem } from './client'
 import type { Conn, Socket } from './conn'
-import { RpcCall } from './types'
+import type { RpcCall } from './types'
 import { once, type Disposable } from './utils'
 
 const webCrypto = crypto ?? require('crypto').webcrypto
