@@ -13,3 +13,12 @@ export const once = <T extends unknown[], R>(
   return (...args: T) =>
     triggered ? ret : ((triggered = true), (ret = fn(...args)))
 }
+
+export const WebSocket = (() =>
+  globalThis.WebSocket ?? globalThis?.require?.('ws'))()
+
+export const fetch = (() =>
+  globalThis.fetch ?? globalThis?.require?.('cross-fetch'))()
+
+export const crypto = (() =>
+  globalThis.crypto ?? globalThis?.require?.('crypto')?.webcrypto)()
