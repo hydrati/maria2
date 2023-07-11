@@ -16,6 +16,18 @@ Modern & Simple RPC Library for aria2.
 pnpm i maria2
 ```
 
+- If you are using Node.js, you have to install peer dependencies.
+```sh
+# For Node.js <16.7.0
+pnpm i uuid
+
+# For Node.js *
+pnpm i ws
+
+# For Node.js <18.0.0
+pnpm i cross-fetch
+```
+
 - Start aria2 with rpc, example
 ```sh
 aria2c --enable-rpc=true --rpc-listen-all=true --rpc-allow-origin-all=true --rpc-listen-port=6800
@@ -24,10 +36,13 @@ aria2c --enable-rpc=true --rpc-listen-all=true --rpc-allow-origin-all=true --rpc
 
 - Connect by WebSocket
 ```ts
-import { openAsync, createWebSocket, aria2 } from 'maria2'
+import { open, aria2 } from 'maria2'
 
-const conn = await openAsync(
-  createWebSocket('ws://localhost:6800/jsonrpc')
+const conn = await open(
+  new WebSocket('ws://localhost:6800/jsonrpc')
+
+  // import { createWebSocket } from 'maria2'
+  // createWebSocket('ws://localhost:6800/jsonrpc')
 )
 
 const version = await aria2.getVersion(conn)
@@ -35,9 +50,9 @@ const version = await aria2.getVersion(conn)
 
 - Connect by HTTP
 ```ts
-import { openAsync, createHTTP, aria2 } from 'maria2'
+import { open, createHTTP, aria2 } from 'maria2'
 
-const conn = await openAsync(
+const conn = await open(
   createHTTP('http://localhost:6800/jsonrpc')
 )
 
@@ -46,10 +61,10 @@ const version = await aria2.getVersion(conn)
 
 - Multicall
 ```ts
-import { openAsync, createWebSocket, system } from 'maria2'
+import { open, system } from 'maria2'
 
-const conn = await openAsync(
-  createWebSocket('ws://localhost:6800/jsonrpc')
+const conn = await open(
+  new WebSocket('ws://localhost:6800/jsonrpc')
 )
 
 const [result0, result1] = await system.multicall({
@@ -62,7 +77,8 @@ const [result0, result1] = await system.multicall({
 ```
 
 ## Thanks to
-[@yjl9903](https://github.com/yjl9903)
+- [XLor (@yjl9903)](https://github.com/yjl9903)
+- [L0serj3rry (@Cnotech)](https://github.com/Cnotech)
 
 ## License
 MIT License © 2023 [Hydration](https://github.com/hydrati)
