@@ -3,13 +3,6 @@ import type { Conn, Socket } from './conn'
 import type { RpcCall } from './types'
 import { once, type Disposable } from './utils'
 
-const webCrypto = crypto ?? require('crypto').webcrypto
-const _queueMicrotask =
-  queueMicrotask ??
-  ((f) => {
-    new Promise(() => f())
-  })
-
 const decodeMessageData = (data: any) => {
   if (typeof data == 'string') {
     return data
@@ -56,7 +49,7 @@ export const openAsync = async (
     const cb = callbacks.get(body.id)
     if (cb) {
       callbacks.delete(body.id)
-      _queueMicrotask(() => cb(body.error, body.result))
+      queueMicrotask(() => cb(body.error, body.result))
     }
   }
 
@@ -98,7 +91,7 @@ export const openAsync = async (
           return onReject(new Error('Socket is not open'))
         }
 
-        const id = webCrypto.randomUUID()
+        const id = crypto.randomUUID()
         callbacks.set(id, createCallback(id, onResolve, onReject))
 
         const body = JSON.stringify({
