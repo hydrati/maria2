@@ -14,36 +14,40 @@ export const once = <T extends unknown[], R>(
     triggered ? ret : ((triggered = true), (ret = fn(...args)))
 }
 
-export const WebSocket = (() =>
-  // @ts-ignore
-  globalThis.WebSocket ?? globalThis?.require?.('ws'))()
+const isNodeEnv = globalThis.global.process.versions.node != null
 
-export const fetch = (() =>
-  // @ts-ignore
-  globalThis.fetch ?? globalThis?.require?.('cross-fetch'))()
+// @ts-ignore
+export const WebSocket =
+  globalThis.WebSocket ?? (isNodeEnv ? (await import('ws')).default : void 0)
 
-export const randomUUID = ((): (() => string) => {
+// @ts-ignore
+export const fetch =
+  globalThis.fetch ??
+  (isNodeEnv ? (await import('cross-fetch')).default : void 0)
+
+// @ts-ignore
+export const randomUUID = await (async () => {
   if (globalThis?.crypto?.randomUUID != null) {
     return () => globalThis.crypto.randomUUID()
   } else {
-    const nodeCryptoUUID =
-      // @ts-ignore
-      globalThis?.require?.('crypto')?.webcrypto?.randomUUID
-    if (nodeCryptoUUID != null) {
-      return () => nodeCryptoUUID()
-    } else {
-      // @ts-ignore
-      const uuidV4 = globalThis?.require?.('uuid')?.v4
+    if (isNodeEnv) {
+      const webCrypto = (await import('node:crypto')).webcrypto
+      if (webCrypto.randomUUID != null) {
+        return () => webCrypto.randomUUID()
+      }
+
+      const uuidV4 = (await import('uuid'))?.v4
       if (uuidV4 != null) {
         return () => uuidV4()
-      } else {
-        console.warn(
-          '[warn] Not found `crypto.randomUUID()` in this environment; ' +
-            'switching to fallback (unsafe).'
-        )
-        let count = 0
-        return () => (count += 1).toString()
       }
     }
+
+    console.warn(
+      '[warn] Not found `crypto.randomUUID()` in this environment; ' +
+        'switching to fallback (unsafe).'
+    )
+
+    let count = 0
+    return () => (count += 1).toString()
   }
 })()
