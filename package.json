@@ -1,6 +1,6 @@
 {
   "name": "maria2",
-  "version": "0.2.6",
+  "version": "0.2.7",
   "description": "Simple RPC Library for aria2",
   "keywords": [
     "aria2",
