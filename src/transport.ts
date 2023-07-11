@@ -8,7 +8,7 @@ export type Aria2RpcHTTPUrl =
   | `${'http' | 'https'}://${string}/jsonrpc`
 
 const _WebSocket = globalThis.WebSocket ?? globalThis?.require?.('ws')
-const _fetch = globalThis.fetch ?? globalThis?.require?.('cross-fetch')
+const _fetch = globalThis.fetch
 
 export const createWebSocket = (url: Aria2RpcWebSocketUrl) => {
   if (_WebSocket == null) {
