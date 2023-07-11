@@ -22,7 +22,7 @@ import type {
 } from './types/system'
 import type { Disposable, TrimStart } from './utils'
 
-type ClientAria2Common = {
+export type ClientAria2 = {
   [P in TrimStart<
     Exclude<
       keyof Aria2ClientMethodCallMap,
@@ -36,48 +36,22 @@ type ClientAria2Common = {
     conn: Conn,
     ...args: Aria2ClientMethodCallMap[`aria2.${P}`]['params']
   ) => Promise<NonNullable<Aria2ClientMethodResultMap[`aria2.${P}`]['result']>>
-}
-
-type ClientAria2TellStatus = {
+} & {
   tellStatus: <T extends Aria2TellStatusParams>(
     conn: Conn,
     ...args: T
   ) => Promise<NonNullable<Aria2TellStatusParamsToResult<T>['result']>>
-}
-
-type ClientAria2TellStatusList = {
+} & {
+  [_ in 'tellWaiting' | 'tellStopped']: <T extends Aria2TellStatusListParams>(
+    conn: Conn,
+    ...args: T
+  ) => Promise<NonNullable<Aria2TellStatusListParamsToResult<T[2]>['result']>>
+} & {
   tellActive: <T extends Aria2TellActiveParams>(
     conn: Conn,
     ...args: T
   ) => Promise<NonNullable<Aria2TellStatusListParamsToResult<T[0]>['result']>>
-  tellWaiting: <T extends Aria2TellStatusListParams>(
-    conn: Conn,
-    ...args: T
-  ) => Promise<NonNullable<Aria2TellStatusListParamsToResult<T[2]>['result']>>
-  tellStopped: <T extends Aria2TellStatusListParams>(
-    conn: Conn,
-    ...args: T
-  ) => Promise<NonNullable<Aria2TellStatusListParamsToResult<T[2]>['result']>>
-}
-
-type ClientSystemMulticall = {
-  multicall: <T extends Aria2SystemMulticallParams>(
-    conn: Conn,
-    ...args: T
-  ) => Promise<NonNullable<Aria2SystemMulticallParamsToResult<T>['result']>>
-}
-
-type ClientSystemCommon = {
-  [P in TrimStart<
-    Exclude<keyof Aria2SystemMethodCallMap, 'system.multicall'>,
-    'system.'
-  >]: (
-    conn: Conn,
-    ...args: Aria2SystemMethodCallMap[`system.${P}`]['params']
-  ) => Promise<NonNullable<Aria2SystemMethodResultMap[`system.${P}`]['result']>>
-}
-
-type ClientAria2Notification = {
+} & {
   [P in TrimStart<Aria2ClientNotificationMethod, 'aria2.'>]: <
     T extends (...args: Aria2ClientNotificationParams) => void,
   >(
@@ -92,9 +66,17 @@ type ClientAria2Notification = {
   ) => Disposable<T>
 }
 
-export type ClientSystem = ClientSystemCommon & ClientSystemMulticall
-
-export type ClientAria2 = ClientAria2Common &
-  ClientAria2TellStatus &
-  ClientAria2TellStatusList &
-  ClientAria2Notification
+export type ClientSystem = {
+  [P in TrimStart<
+    Exclude<keyof Aria2SystemMethodCallMap, 'system.multicall'>,
+    'system.'
+  >]: (
+    conn: Conn,
+    ...args: Aria2SystemMethodCallMap[`system.${P}`]['params']
+  ) => Promise<NonNullable<Aria2SystemMethodResultMap[`system.${P}`]['result']>>
+} & {
+  multicall: <T extends Aria2SystemMulticallParams>(
+    conn: Conn,
+    ...args: T
+  ) => Promise<NonNullable<Aria2SystemMulticallParamsToResult<T>['result']>>
+}
