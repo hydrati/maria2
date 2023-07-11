@@ -22,7 +22,7 @@ export const createHTTP = (url: Aria2RpcHTTPUrl) => {
   }
 
   return new (class extends EventTarget {
-    readyState: number = ReadyState.Open
+    readyState: ReadyState = ReadyState.Open
 
     close(): void {}
 

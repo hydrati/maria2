@@ -75,7 +75,7 @@ export const openAsync = async (
     }
   }
 
-  if (socket.readyState == ReadyState.Open) {
+  if (socket.readyState == ReadyState.Connecting) {
     await new Promise((r) =>
       socket.addEventListener('open', () => r(null), { once: true })
     )
