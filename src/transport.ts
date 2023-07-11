@@ -24,6 +24,8 @@ export const createHTTP = (url: Aria2RpcHTTPUrl) => {
   return new (class extends EventTarget {
     readyState: number = ReadyState.Open
 
+    close(): void {}
+
     send(data: string): void {
       fetch(url, {
         method: 'POST',

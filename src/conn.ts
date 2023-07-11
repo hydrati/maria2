@@ -23,6 +23,8 @@ export interface Socket {
 
   send(data: string): void
 
+  close(code?: number, reason?: string): void
+
   addEventListener(
     type: 'message',
     listener: (event: { data: any }) => void
