@@ -21,6 +21,7 @@
     "type": "git",
     "url": "git+https://github.com/hydrati/maria2.git"
   },
+  "license": "MIT",
   "author": {
     "name": "Hydration",
     "url": "https://github.com/hydrati"
@@ -42,12 +43,10 @@
     "build": "unbuild",
     "format": "prettier --write src/**/*.ts",
     "release": "bumpp --commit --push --tag && pnpm publish",
-    "preversion": "pnpm typecheck && pnpm build",
     "test": "vitest",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "preversion": "pnpm typecheck && pnpm build"
   },
-  "license": "MIT",
-  "packageManager": "pnpm@8.6.7",
   "devDependencies": {
     "@types/node": "^20.4.1",
     "bumpp": "^9.1.1",
@@ -59,12 +58,13 @@
     "vitest": "^0.33.0",
     "ws": "*"
   },
-  "publishConfig": {
-    "access": "public",
-    "registry": "https://registry.npmjs.com"
-  },
   "peerDependencies": {
     "cross-fetch": "*",
     "ws": "*"
+  },
+  "packageManager": "pnpm@8.6.7",
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.com"
   }
 }
