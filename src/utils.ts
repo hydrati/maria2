@@ -20,5 +20,25 @@ export const WebSocket = (() =>
 export const fetch = (() =>
   globalThis.fetch ?? globalThis?.require?.('cross-fetch'))()
 
-export const crypto = (() =>
-  globalThis.crypto ?? globalThis?.require?.('crypto')?.webcrypto)()
+export const randomUUID = ((): (() => string) => {
+  if (globalThis.crypto.randomUUID != null) {
+    return () => globalThis.crypto.randomUUID()
+  } else {
+    const nodeCryptoUUID =
+      globalThis?.require?.('crypto')?.webcrypto?.randomUUID
+    if (nodeCryptoUUID != null) {
+      return () => nodeCryptoUUID()
+    } else {
+      const uuidV4 = globalThis?.require?.('uuid')?.v4
+      if (uuidV4 != null) {
+        return () => uuidV4()
+      } else {
+        console.warn(
+          'Not Found `crypto.randomUUID()` in this enviroment, used unsafe count instead.'
+        )
+        let count = 0
+        return () => (count += 1).toString()
+      }
+    }
+  }
+})()

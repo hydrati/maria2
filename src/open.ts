@@ -2,7 +2,7 @@ import type { ClientAria2, ClientSystem } from './client'
 import type { Conn, Socket } from './conn'
 import type { RpcCall } from './types'
 import { once, type Disposable } from './utils'
-import { crypto } from './utils'
+import { randomUUID } from './utils'
 
 const decodeMessageData = (data: any) => {
   if (typeof data == 'string') {
@@ -43,10 +43,6 @@ export const openAsync = async (
   secret?: string,
   onMessageError?: (err: unknown) => void
 ): Promise<Conn> => {
-  if (crypto == null) {
-    throw new Error('Not Found `crypto` in globalThis or require()')
-  }
-
   const listeners = new Map<string, Set<(...args: any[]) => void>>()
   const callbacks = new Map<string, (err?: any, ret?: any) => void>()
 
@@ -97,7 +93,7 @@ export const openAsync = async (
           return onReject(new Error('Socket is not open'))
         }
 
-        const id = crypto.randomUUID()
+        const id = randomUUID()
         callbacks.set(id, createCallback(id, onResolve, onReject))
 
         const body = JSON.stringify({
