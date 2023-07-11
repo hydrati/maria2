@@ -4,6 +4,65 @@ import type { RpcCall } from './types'
 import { once, type Disposable } from './utils'
 import { randomUUID } from './utils'
 
+const { invokeEvent } = hooks()
+
+function hooks() {
+  interface LifeEvent {
+    progress: number
+    filename: string
+    filesize: string
+    state: "start"|"pause"|"stop"|"complete"|"error"
+  }
+  let e_: LifeEvent = {
+    progress: 0,
+    filename: '',
+    filesize: '',
+    state: 'start',
+  }
+  let EventCallback:{[key in LifeEvent["state"]]: (e: LifeEvent) => void;} = {
+    "start":(e: LifeEvent) => {},
+    "pause":(e: LifeEvent) => {},
+    "complete":(e: LifeEvent) => {},
+    "stop":(e:LifeEvent)=>{},
+    "error":(e:LifeEvent)=>{},
+  }
+  let invokeEvent = (name:LifeEvent["state"])=>{
+    EventCallback[name].call(null,e_)
+  }
+  let downloadFailed = (callback: (e: LifeEvent) => void) => {
+    e_.state = "stop"
+    EventCallback.stop = callback
+  }
+  let changeEvent = (e: LifeEvent) => {
+    e_ = e
+  }
+  let downloadPause = (callback: (e: LifeEvent) => void) => {
+    e_.state = 'pause'
+    EventCallback.pause = callback
+  }
+  let downloadCompleted = (callback: (e: LifeEvent) => void) => {
+    e_.state = 'complete'
+    EventCallback.complete = callback
+  }
+  let connectFailed = (callback: (e: LifeEvent) => void) => {
+    e_.state = 'stop'
+    EventCallback.stop = callback
+  }
+  let downloadError = (callback: (e: LifeEvent) => void)=>{
+    e_.state = "error"
+    EventCallback.error = callback
+  }
+  return {
+    downloadFailed,
+    downloadPause,
+    downloadCompleted,
+    connectFailed,
+    downloadError,
+    changeEvent,
+    invokeEvent,
+  }
+}
+
 const decodeMessageData = (data: any) => {
   if (typeof data == 'string') {
     return data
@@ -28,6 +87,8 @@ const decodeMessageData = (data: any) => {
     throw new Error('Data cannot be decoded')
   }
 }
+
+
 
 const createCallback = <T>(
   id: string,
@@ -71,6 +132,7 @@ export const openAsync = async (
         return
       }
     } catch (err: any) {
+      invokeEvent("stop")
       onMessageError?.(err)
     }
   }
