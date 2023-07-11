@@ -8,10 +8,7 @@ export type Aria2RpcHTTPUrl =
   | `${'http' | 'https'}://${string}:${number}/jsonrpc`
   | `${'http' | 'https'}://${string}/jsonrpc`
 
-export const createWebSocket = (
-  url: Aria2RpcWebSocketUrl,
-  ws: () => WebSocket
-) => {
+export const createWebSocket = (url: Aria2RpcWebSocketUrl) => {
   if (WebSocket == null) {
     throw new Error('Not Found `WebSocket()` in globalThis or require()')
   }
