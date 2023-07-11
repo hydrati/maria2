@@ -1,57 +1,81 @@
 import type { ClientAria2, ClientSystem } from './client'
 import type { Conn, Socket } from './conn'
+import { RpcCall } from './types'
 import { once, type Disposable } from './utils'
+
+const webCrypto = crypto ?? require('crypto').webcrypto
+const _queueMicrotask =
+  queueMicrotask ??
+  ((f) => {
+    new Promise(() => f())
+  })
+
+const decodeMessageData = (data: unknown) => {
+  if (data instanceof Uint8Array || data instanceof ArrayBuffer) {
+    return new TextDecoder().decode(data)
+  } else if (Array.isArray(data)) {
+    const i: string[] = []
+    const d = new TextDecoder()
+    for (const r of data) {
+      if (typeof r == 'string') {
+        i.push(r)
+      } else if (r instanceof Uint8Array || data instanceof ArrayBuffer) {
+        i.push(d.decode(r))
+      } else if (r.buffer instanceof ArrayBuffer) {
+        i.push(d.decode(r.buffer))
+      }
+    }
+    return i.join('')
+  } else {
+    throw new Error('Data cannot be decoded')
+  }
+}
+
+const createCallback = <T>(
+  id: string,
+  onResolve: (v: T) => void,
+  onReject: (e: any) => void
+) => {
+  return (err: any, ret: unknown) =>
+    err != null ? onReject(err) : onResolve(ret as T)
+}
 
 export const openAsync = async (
   socket: Socket,
   secret?: string,
-  onerror?: (err: unknown) => void
+  onMessageError?: (err: unknown) => void
 ): Promise<Conn> => {
-  const e = new Map<string, Set<(...args: any[]) => void>>()
-  const c = new Map<string, (err?: any, ret?: any) => void>()
-  const t = crypto ?? require('crypto').webcrypto
-  const u = () => t.randomUUID()
-  const n =
-    (id: string, r: (v: any) => void, e: (e: any) => void) =>
-    (err: any, ret: any) => {
-      c.delete(id)
-      if (err != null) e(err)
-      else r(ret)
+  const listeners = new Map<string, Set<(...args: any[]) => void>>()
+  const callbacks = new Map<string, (err?: any, ret?: any) => void>()
+
+  const invokeCallback = (body: any) => {
+    const cb = callbacks.get(body.id)
+    if (cb) {
+      callbacks.delete(body.id)
+      _queueMicrotask(() => cb(body.error, body.result))
     }
+  }
 
-  socket.addEventListener('message', (v) => {
-    let data = v.data
+  const dispatchNotification = (body: any) =>
+    listeners.get(body.method)?.forEach((fn) => fn(...body.params))
 
-    if (typeof data != 'string') {
-      if (data instanceof Uint8Array || data instanceof ArrayBuffer) {
-        data = new TextDecoder().decode(data)
-      } else if (Array.isArray(data)) {
-        const i: string[] = []
-        const d = new TextDecoder()
-        for (const r of data) {
-          if (typeof r == 'string') {
-            i.push(r)
-          } else if (r instanceof Uint8Array || data instanceof ArrayBuffer) {
-            i.push(d.decode(r))
-          }
-        }
-        data = i.join('')
-      } else {
+  const handleMessage = ({ data }: { data: unknown }) => {
+    try {
+      const body = JSON.parse(decodeMessageData(data))
+
+      if (body.method != null) {
+        dispatchNotification(body)
         return
       }
-    }
 
-    try {
-      const j = JSON.parse(data)
-      if (j.method != null) {
-        e.get(j.method)?.forEach((e) => e(...j.params))
-      } else if (j.result != null || j.error != null) {
-        c.get(j.id)?.(j.error, j.result)
+      if (body.id != null && (body.result != null || body.error != null)) {
+        invokeCallback(body)
+        return
       }
     } catch (err: any) {
-      onerror?.(err)
+      onMessageError?.(err)
     }
-  })
+  }
 
   if (socket.readyState == 0) {
     await new Promise((r) =>
@@ -61,33 +85,30 @@ export const openAsync = async (
     throw new Error('Socket is closed')
   }
 
+  socket.addEventListener('message', handleMessage)
+
   return {
     sendRequest: (method: string, ...params: any[]) =>
-      new Promise((r, e) => {
+      new Promise((onResolve, onReject) => {
         if (socket.readyState != 1) {
-          const i = new Error('Socket is not open')
-          e(i)
-          onerror?.(i)
-          return
+          return onReject(new Error('Socket is not open'))
         }
 
+        const id = webCrypto.randomUUID()
+        callbacks.set(id, createCallback(id, onResolve, onReject))
+
+        const body = JSON.stringify({
+          jsonrpc: '2.0',
+          id,
+          method,
+          params: secret !== null ? [secret, params] : params,
+        } satisfies RpcCall)
+
         try {
-          const id = u()
-          params = secret !== null ? [secret, params] : params
-
-          c.set(id, n(id, r, e))
-
-          socket.send(
-            JSON.stringify({
-              jsonrpc: '2.0',
-              id,
-              method,
-              params,
-            })
-          )
+          socket.send(body)
         } catch (err: any) {
-          e(err)
-          onerror?.(err)
+          onReject(err)
+          onMessageError?.(err)
         }
       }),
 
@@ -95,13 +116,14 @@ export const openAsync = async (
       type: string,
       listener: T
     ): Disposable<T> => {
-      let b = e.get(type)
-      b || e.set(type, (b = new Set()))
-      b.add(listener)
+      let bucket = listeners.get(type)
+      bucket || listeners.set(type, (bucket = new Set()))
+
+      bucket.add(listener)
 
       return {
         dispose: once(() => {
-          e.get(type)?.delete(listener)
+          listeners.get(type)?.delete(listener)
           return listener
         }),
       }
@@ -111,19 +133,20 @@ export const openAsync = async (
 
 export const system = Object.freeze(
   ['system.multicall', 'system.listMethods', 'system.listNotifications'].reduce(
-    (o, k) => {
-      o[k.slice(7)] = (conn: Conn, ...args: unknown[]) =>
-        conn.sendRequest(k, ...args)
-      return o
+    (obj, methodName) => {
+      obj[methodName.slice(7)] = (conn: Conn, ...args: unknown[]) =>
+        conn.sendRequest(methodName, ...args)
+      return obj
     },
-    Object.create(null)
+    {} as any
   )
 ) as Readonly<ClientSystem>
 
 export const aria2 = Object.freeze(
   Object.assign(
     {
-      when: (conn: Conn, t: string, h: any) => conn.onNotification(t, h),
+      when: (conn: Conn, type: string, listener: any) =>
+        conn.onNotification(type, listener),
     },
     [
       'aria2.changeOption',
@@ -159,11 +182,11 @@ export const aria2 = Object.freeze(
       'aria2.addMetalink',
       'aria2.addTorrent',
       'aria2.addUri',
-    ].reduce<any>((o, k) => {
-      o[k.slice(6)] = (conn: Conn, ...args: unknown[]) =>
-        conn.sendRequest(k, ...args)
-      return o
-    }, {}),
+    ].reduce((obj, methodName) => {
+      obj[methodName.slice(6)] = (conn: Conn, ...args: unknown[]) =>
+        conn.sendRequest(methodName, ...args)
+      return obj
+    }, {} as any),
     [
       'aria2.onDownloadStart',
       'aria2.onDownloadPause',
@@ -171,9 +194,10 @@ export const aria2 = Object.freeze(
       'aria2.onDownloadComplete',
       'aria2.onDownloadError',
       'aria2.onBtDownloadComplete',
-    ].reduce<any>((o, k) => {
-      o[k.slice(6)] = (conn: Conn, h: any) => conn.onNotification(k, h)
-      return o
-    }, {})
+    ].reduce((obj, methodName) => {
+      obj[methodName.slice(6)] = (conn: Conn, h: any) =>
+        conn.onNotification(methodName, h)
+      return obj
+    }, {} as any)
   )
 ) as Readonly<ClientAria2>
