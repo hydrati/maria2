@@ -10,22 +10,26 @@ const _queueMicrotask =
     new Promise(() => f())
   })
 
-const decodeMessageData = (data: unknown) => {
-  if (data instanceof Uint8Array || data instanceof ArrayBuffer) {
+const decodeMessageData = (data: any) => {
+  if (typeof data == 'string') {
+    return data
+  } else if (data instanceof Uint8Array || data instanceof ArrayBuffer) {
     return new TextDecoder().decode(data)
+  } else if (data.buffer instanceof ArrayBuffer) {
+    return new TextDecoder().decode(data.buffer)
   } else if (Array.isArray(data)) {
-    const i: string[] = []
-    const d = new TextDecoder()
-    for (const r of data) {
-      if (typeof r == 'string') {
-        i.push(r)
-      } else if (r instanceof Uint8Array || data instanceof ArrayBuffer) {
-        i.push(d.decode(r))
-      } else if (r.buffer instanceof ArrayBuffer) {
-        i.push(d.decode(r.buffer))
+    const out: string[] = []
+    const decoder = new TextDecoder()
+    for (const chunk of data) {
+      if (typeof chunk == 'string') {
+        out.push(chunk)
+      } else if (chunk instanceof Uint8Array || chunk instanceof ArrayBuffer) {
+        out.push(decoder.decode(chunk))
+      } else if (chunk.buffer instanceof ArrayBuffer) {
+        out.push(decoder.decode(chunk.buffer))
       }
     }
-    return i.join('')
+    return out.join('')
   } else {
     throw new Error('Data cannot be decoded')
   }
