@@ -10,7 +10,7 @@ Modern & Simple RPC Library for aria2.
 - Better TypeScript IDE Support.
 - Browser and Node.js Support.
 
-## Example
+## Getting Started
 - Install this package
 ```sh
 pnpm i maria2
@@ -32,7 +32,6 @@ pnpm i cross-fetch
 ```sh
 aria2c --enable-rpc=true --rpc-listen-all=true --rpc-allow-origin-all=true --rpc-listen-port=6800
 ```
-
 
 - Connect by WebSocket
 ```ts
