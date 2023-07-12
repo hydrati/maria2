@@ -41,6 +41,17 @@
   },
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
+  "typesVersions": {
+    "*": {
+      "*": [],
+      ".": [
+        "./dist/index.d.ts"
+      ],
+      "transport": [
+        "./dist/transport.d.ts"
+      ]
+    }
+  },
   "files": [
     "dist"
   ],

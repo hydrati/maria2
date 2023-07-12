@@ -20,7 +20,11 @@ import type {
   Aria2SystemMulticallParams,
   Aria2SystemMulticallParamsToResult,
 } from './types/system.ts'
-import type { Disposable, TrimStart } from './utils.ts'
+export interface Disposable<T = void> {
+  dispose(): T
+}
+
+export type TrimStart<T, U extends string> = T extends `${U}${infer P}` ? P : T
 
 export type ClientAria2 = {
   [P in TrimStart<

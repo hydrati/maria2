@@ -5,14 +5,9 @@ import {
   type Socket,
   SendRequestOptions,
 } from './conn.ts'
-import type { RpcCall } from './types/index.ts'
-import {
-  once,
-  type Disposable,
-  decodeMessageData,
-  useTimeout,
-} from './utils.ts'
-import { randomUUID } from './utils.ts'
+import { once, decodeMessageData, useTimeout } from './shared.ts'
+import type { Disposable } from './types/disposable.ts'
+import { randomUUID } from './shared.ts'
 
 const createCallback = <T>(
   id: string,
