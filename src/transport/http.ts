@@ -9,6 +9,7 @@ const createPost = await (async () => {
       new Promise<string>((onResolve, onReject) => {
         globalThis
           .fetch(url, {
+            method: 'POST',
             body: json,
             headers,
           })
