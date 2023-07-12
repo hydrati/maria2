@@ -33,7 +33,7 @@ pnpm i uuid
 pnpm i cross-fetch
 ```
 
-- Start aria2 with rpc, example
+- Run `aria2c` with RPC options, for example
 ```sh
 aria2c --enable-rpc=true --rpc-listen-all=true --rpc-allow-origin-all=true --rpc-listen-port=6800
 ```
