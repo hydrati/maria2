@@ -1,5 +1,5 @@
-import type { Socket } from '../conn'
-import { isNodeEnv } from '../shared'
+import type { Socket } from '../conn.ts'
+import { isNodeEnv } from '../shared.ts'
 
 // @ts-ignore
 const WebSocket =
