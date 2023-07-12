@@ -27,12 +27,23 @@ export interface Socket {
 
   addEventListener(
     type: 'message',
-    listener: (event: { data: any }) => void
+    listener: (event: { data: any }) => void,
+    options?: AddEventListenerOptions
   ): void
   addEventListener(
     type: 'open',
     listener: () => void,
-    options?: { once: boolean }
+    options?: AddEventListenerOptions
+  ): void
+  addEventListener(
+    type: 'error',
+    listener: (error: any) => void,
+    options?: AddEventListenerOptions
+  ): void
+  addEventListener(
+    type: 'close',
+    listener: () => void,
+    options?: AddEventListenerOptions
   ): void
 }
 
