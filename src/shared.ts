@@ -1,4 +1,5 @@
-export const isNodeEnv = global?.process?.versions?.node != null
+export const isNodeEnv =
+  (globalThis as any)?.global?.process?.versions?.node != null
 
 export const once = <T extends unknown[], R>(
   fn: (...args: T) => R
