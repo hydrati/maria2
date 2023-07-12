@@ -45,4 +45,4 @@ export type { Aria2SystemMulticallParams } from './system.ts'
 
 export type { Aria2StringUtf8 } from './utils.ts'
 
-export * from './disposable'
+export * from './disposable.ts'
