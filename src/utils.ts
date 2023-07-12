@@ -15,6 +15,7 @@ export const once = <T extends unknown[], R>(
 }
 
 const isNodeEnv = (globalThis as any)?.global?.process?.versions?.node != null
+const isDenoEnv = (globalThis as any)?.Deno?.version?.deno != null
 
 // @ts-ignore
 export const WebSocket =
@@ -31,13 +32,16 @@ export const randomUUID = await (async () => {
   if (globalThis?.crypto?.randomUUID != null) {
     return () => globalThis.crypto.randomUUID()
   } else {
-    if (isNodeEnv) {
-      const webCrypto = (await import('node:crypto'))?.webcrypto
-      if (webCrypto?.randomUUID != null) {
-        return () => webCrypto.randomUUID()
+    if (isNodeEnv || isDenoEnv) {
+      if (isNodeEnv) {
+        const webCrypto = await (() => import('node:crypto'))()
+        if (webCrypto?.webcrypto?.randomUUID != null) {
+          return () => webCrypto.webcrypto.randomUUID()
+        }
       }
 
-      const uuidV4 = (await import('uuid'))?.v4
+      const uuidV4 = (await (() => import(isDenoEnv ? 'uuid' : 'npm:uuid'))())
+        ?.v4
       if (uuidV4 != null) {
         return () => uuidV4()
       }
