@@ -31,14 +31,21 @@ export interface OpenOptions {
    * @public
    */
   timeout?: number
+
+  /**
+   * Timeout for waiting socket (ms).
+   * @default 5000
+   * @public
+   */
+  openTimeout?: number
 }
 
 export const open = async (
   socket: Socket,
   options: OpenOptions = {}
 ): Promise<Conn> => {
-  const { onServerError, secret, timeout } = Object.assign(
-    { timeout: 5000 },
+  const { onServerError, secret, timeout, openTimeout } = Object.assign(
+    { timeout: 5000, openTimeout: 5000 },
     options
   )
 
@@ -72,8 +79,11 @@ export const open = async (
   }
 
   if (socket.readyState == ReadyState.Connecting) {
-    await new Promise((r) =>
-      socket.addEventListener('open', () => r(null), { once: true })
+    await useTimeout(
+      new Promise((r) =>
+        socket.addEventListener('open', () => r(null), { once: true })
+      ),
+      openTimeout
     )
   } else if (socket.readyState == ReadyState.Closing) {
     throw new Error('Socket is closing')
