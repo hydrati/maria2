@@ -52,7 +52,6 @@
     "@types/uuid": "^9.0.2",
     "@types/ws": "^8.5.5",
     "bumpp": "^9.1.1",
-    "cross-fetch": "*",
     "prettier": "^3.0.0",
     "typescript": "^5.1.6",
     "unbuild": "^1.2.1",
@@ -62,7 +61,6 @@
     "ws": "*"
   },
   "peerDependencies": {
-    "cross-fetch": "*",
     "uuid": "*",
     "ws": "*"
   },

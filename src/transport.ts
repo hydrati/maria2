@@ -1,5 +1,5 @@
 import { ReadyState, type Socket } from './conn.ts'
-import { WebSocket, fetch } from './utils.ts'
+import { WebSocket, createPost } from './utils.ts'
 
 export type Aria2RpcWebSocketUrl =
   | `${'ws' | 'wss'}://${string}:${number}/jsonrpc`
@@ -17,10 +17,6 @@ export const createWebSocket = (url: Aria2RpcWebSocketUrl) => {
 }
 
 export const createHTTP = (url: Aria2RpcHTTPUrl) => {
-  if (fetch == null) {
-    throw new Error('Not Found `fetch()` in globalThis or require()')
-  }
-
   return new (class extends EventTarget {
     readyState: ReadyState = ReadyState.Open
 
@@ -29,16 +25,8 @@ export const createHTTP = (url: Aria2RpcHTTPUrl) => {
     }
 
     send(data: string): void {
-      fetch(url, {
-        method: 'POST',
-        body: data,
-        headers: new Headers(),
-      }).then((v) => {
-        if (v.ok) {
-          v.text().then((v) =>
-            this.dispatchEvent(new MessageEvent('message', { data: v }))
-          )
-        }
+      createPost(url, data).then((data0: string) => {
+        this.dispatchEvent(new MessageEvent('message', { data: data0 }))
       })
     }
   })() as unknown as Socket
