@@ -41,11 +41,7 @@ const createCallback = <T>(
 export const close = (conn: Conn, code?: number, reason?: string) =>
   conn.getSocket().close(code, reason)
 
-export const open = async (
-  socket: Socket,
-  secret?: string,
-  onMessageError?: (err: unknown) => void
-): Promise<Conn> => {
+export const open = async (socket: Socket, secret?: string): Promise<Conn> => {
   const listeners = new Map<string, Set<(...args: any[]) => void>>()
   const callbacks = new Map<string, (err?: any, ret?: any) => void>()
 
@@ -61,20 +57,16 @@ export const open = async (
     listeners.get(body.method)?.forEach((fn) => fn(...body.params))
 
   const handleMessage = ({ data }: { data: unknown }) => {
-    try {
-      const body = JSON.parse(decodeMessageData(data))
+    const body = JSON.parse(decodeMessageData(data))
 
-      if (body.method != null) {
-        dispatchNotification(body)
-        return
-      }
+    if (body.method != null) {
+      dispatchNotification(body)
+      return
+    }
 
-      if (body.id != null && (body.result != null || body.error != null)) {
-        invokeCallback(body)
-        return
-      }
-    } catch (err: any) {
-      onMessageError?.(err)
+    if (body.id != null && (body.result != null || body.error != null)) {
+      invokeCallback(body)
+      return
     }
   }
 
@@ -117,7 +109,6 @@ export const open = async (
           socket.send(body)
         } catch (err: any) {
           onReject(err)
-          onMessageError?.(err)
         }
       }),
 
