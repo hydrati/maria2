@@ -42,7 +42,6 @@ describe('without global', async () => {
 describe('normal', async () => {
   beforeEach(async () => {
     vi.stubGlobal('WebSocket', (await import('ws')).default)
-    vi.stubGlobal('fetch', (await import('cross-fetch')).fetch)
   })
 
   it('createWebSocket should work', async () => {
@@ -52,6 +51,7 @@ describe('normal', async () => {
 
     const socket = createWebSocket('ws://localhost:6800/jsonrpc')
     const conn = await open(socket)
+
     expect(await aria2.getVersion(conn))
       .property('enabledFeatures')
       .satisfies(Array.isArray)

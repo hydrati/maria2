@@ -47,12 +47,24 @@ export interface Socket {
   ): void
 }
 
+export interface SendRequestOptions {
+  method: string
+  /**
+   * Timeout of this request (ms).
+   * No timeout if `false`
+   * @public
+   */
+  timeout?: number | boolean
+  /**
+   * Request with secret.
+   * @default true
+   * @public
+   */
+  secret?: boolean
+}
+
 export interface Conn {
-  sendRequest<T>(
-    useSecret: boolean,
-    method: string,
-    ...args: any[]
-  ): PromiseLike<T>
+  sendRequest<T>(options: SendRequestOptions, ...args: any[]): PromiseLike<T>
   onNotification<T extends (...args: unknown[]) => void>(
     type: string,
     listener: T

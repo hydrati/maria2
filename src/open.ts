@@ -1,33 +1,18 @@
 import type { ClientAria2, ClientSystem } from './client.ts'
-import { ReadyState, type Conn, type Socket } from './conn.ts'
+import {
+  ReadyState,
+  type Conn,
+  type Socket,
+  SendRequestOptions,
+} from './conn.ts'
 import type { RpcCall } from './types/index.ts'
-import { once, type Disposable } from './utils.ts'
+import {
+  once,
+  type Disposable,
+  decodeMessageData,
+  useTimeout,
+} from './utils.ts'
 import { randomUUID } from './utils.ts'
-
-const decodeMessageData = (data: any) => {
-  if (typeof data == 'string') {
-    return data
-  } else if (data instanceof Uint8Array || data instanceof ArrayBuffer) {
-    return new TextDecoder().decode(data)
-  } else if (data.buffer instanceof ArrayBuffer) {
-    return new TextDecoder().decode(data.buffer)
-  } else if (Array.isArray(data)) {
-    const out: string[] = []
-    const decoder = new TextDecoder()
-    for (const chunk of data) {
-      if (typeof chunk == 'string') {
-        out.push(chunk)
-      } else if (chunk instanceof Uint8Array || chunk instanceof ArrayBuffer) {
-        out.push(decoder.decode(chunk))
-      } else if (chunk.buffer instanceof ArrayBuffer) {
-        out.push(decoder.decode(chunk.buffer))
-      }
-    }
-    return out.join('')
-  } else {
-    throw new Error('Data cannot be decoded')
-  }
-}
 
 const createCallback = <T>(
   id: string,
@@ -41,7 +26,27 @@ const createCallback = <T>(
 export const close = (conn: Conn, code?: number, reason?: string) =>
   conn.getSocket().close(code, reason)
 
-export const open = async (socket: Socket, secret?: string): Promise<Conn> => {
+export interface OpenOptions {
+  secret?: string
+  onServerError?: (err: any) => void
+
+  /**
+   * Timeout for each request (ms).
+   * @default 5000
+   * @public
+   */
+  timeout?: number
+}
+
+export const open = async (
+  socket: Socket,
+  options: OpenOptions = {}
+): Promise<Conn> => {
+  const { onServerError, secret, timeout } = Object.assign(
+    { timeout: 5000 },
+    options
+  )
+
   const listeners = new Map<string, Set<(...args: any[]) => void>>()
   const callbacks = new Map<string, (err?: any, ret?: any) => void>()
 
@@ -64,8 +69,9 @@ export const open = async (socket: Socket, secret?: string): Promise<Conn> => {
       return
     }
 
-    if (body.id != null && (body.result != null || body.error != null)) {
-      invokeCallback(body)
+    if (body.result != null || body.error != null) {
+      if (body.id != null) invokeCallback(body)
+      else if (body.error != null) onServerError?.(body.error)
       return
     }
   }
@@ -86,13 +92,20 @@ export const open = async (socket: Socket, secret?: string): Promise<Conn> => {
     getSocket: () => socket,
     getSecret: () => secret,
 
-    sendRequest: (useSecret: boolean, method: string, ...params: any[]) =>
-      new Promise((onResolve, onReject) => {
+    sendRequest: <T>(
+      {
+        method,
+        secret: useSecret = true,
+        timeout: timeout_,
+      }: SendRequestOptions,
+      ...params: any[]
+    ) => {
+      const id = randomUUID()
+      const p = new Promise<T>((onResolve, onReject) => {
         if (socket.readyState != ReadyState.Open) {
           return onReject(new Error('Socket is not open'))
         }
 
-        const id = randomUUID()
         callbacks.set(id, createCallback(id, onResolve, onReject))
 
         const body = JSON.stringify({
@@ -110,7 +123,14 @@ export const open = async (socket: Socket, secret?: string): Promise<Conn> => {
         } catch (err: any) {
           onReject(err)
         }
-      }),
+      })
+
+      return timeout_ === false
+        ? p
+        : typeof timeout_ == 'number'
+        ? useTimeout(p, timeout_, () => callbacks.delete(id))
+        : useTimeout(p, timeout, () => callbacks.delete(id))
+    },
 
     onNotification: <T extends (...args: unknown[]) => void>(
       type: string,
@@ -140,8 +160,7 @@ export const system = Object.freeze(
 
         if (secret != null) {
           return conn.sendRequest(
-            false,
-            'system.multicall',
+            { method: 'system.multicall', secret: false },
             args.map((v) => {
               const obj = Object.assign({}, v)
               obj.params = [`token:${secret}`, ...obj.params]
@@ -150,13 +169,20 @@ export const system = Object.freeze(
           )
         }
 
-        return conn.sendRequest(false, 'system.multicall', args)
+        return conn.sendRequest(
+          { method: 'system.multicall', secret: false },
+          args
+        )
       },
     },
     ['system.listMethods', 'system.listNotifications'].reduce(
       (obj, methodName) => {
         obj[methodName.slice(7)] = (conn: Conn, ...args: unknown[]) =>
-          conn.sendRequest(false, methodName, ...args)
+          conn.sendRequest(
+            { method: methodName, secret: false },
+            methodName,
+            ...args
+          )
         return obj
       },
       {} as any
@@ -207,7 +233,11 @@ export const aria2 = Object.freeze(
       'aria2.addUri',
     ].reduce((obj, methodName) => {
       obj[methodName.slice(6)] = (conn: Conn, ...args: unknown[]) =>
-        conn.sendRequest(true, methodName, ...args)
+        conn.sendRequest(
+          { method: methodName, secret: true },
+          methodName,
+          ...args
+        )
       return obj
     }, {} as any),
     [
