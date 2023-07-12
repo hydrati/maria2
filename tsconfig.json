@@ -9,7 +9,8 @@
     "strictNullChecks": true,
     "resolveJsonModule": true,
     "skipLibCheck": true,
-    "skipDefaultLibCheck": true
+    "skipDefaultLibCheck": true,
+    "allowImportingTsExtensions": true,
   },
   "exclude": ["tests/**/*.ts"]
 }

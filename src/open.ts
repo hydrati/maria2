@@ -1,8 +1,8 @@
-import type { ClientAria2, ClientSystem } from './client'
-import { ReadyState, type Conn, type Socket } from './conn'
-import type { RpcCall } from './types'
-import { once, type Disposable } from './utils'
-import { randomUUID } from './utils'
+import type { ClientAria2, ClientSystem } from './client.ts'
+import { ReadyState, type Conn, type Socket } from './conn.ts'
+import type { RpcCall } from './types/index.ts'
+import { once, type Disposable } from './utils.ts'
+import { randomUUID } from './utils.ts'
 
 const decodeMessageData = (data: any) => {
   if (typeof data == 'string') {

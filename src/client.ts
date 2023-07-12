@@ -1,26 +1,26 @@
 import type {
   Aria2ClientNotificationParams,
   Aria2ClientNotificationMethod,
-} from './types/notification'
-import type { Conn } from './conn'
+} from './types/notification.ts'
+import type { Conn } from './conn.ts'
 import type {
   Aria2TellActiveParams,
   Aria2TellStatusListParams,
   Aria2TellStatusListParamsToResult,
   Aria2TellStatusParams,
   Aria2TellStatusParamsToResult,
-} from './types/download'
+} from './types/download.ts'
 import type {
   Aria2ClientMethodCallMap,
   Aria2ClientMethodResultMap,
   Aria2SystemMethodCallMap,
   Aria2SystemMethodResultMap,
-} from './types/method'
+} from './types/method.ts'
 import type {
   Aria2SystemMulticallParams,
   Aria2SystemMulticallParamsToResult,
-} from './types/system'
-import type { Disposable, TrimStart } from './utils'
+} from './types/system.ts'
+import type { Disposable, TrimStart } from './utils.ts'
 
 export type ClientAria2 = {
   [P in TrimStart<

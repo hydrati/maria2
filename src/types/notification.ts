@@ -1,5 +1,5 @@
-import type { Aria2DownloadGid } from './download'
-import type { RpcCall } from './jsonrpc'
+import type { Aria2DownloadGid } from './download.ts'
+import type { RpcCall } from './jsonrpc.ts'
 
 export type Aria2ClientNotificationMethod =
   | 'aria2.onDownloadStart'

@@ -1,5 +1,5 @@
-import { ReadyState, type Socket } from './conn'
-import { WebSocket, fetch } from './utils'
+import { ReadyState, type Socket } from './conn.ts'
+import { WebSocket, fetch } from './utils.ts'
 
 export type Aria2RpcWebSocketUrl =
   | `${'ws' | 'wss'}://${string}:${number}/jsonrpc`

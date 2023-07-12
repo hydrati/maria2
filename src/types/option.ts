@@ -1,10 +1,10 @@
-import type { Aria2DownloadGid } from './download'
+import type { Aria2DownloadGid } from './download.ts'
 import type {
   Aria2ClientGidOpCall,
   Aria2ServerOpResult,
   Aria2ServerVoidCall,
-} from './utils'
-import type { RpcCall, RpcResult } from './jsonrpc'
+} from './utils.ts'
+import type { RpcCall, RpcResult } from './jsonrpc.ts'
 
 export type Aria2ClientInputOptionKey =
   | 'all-proxy'

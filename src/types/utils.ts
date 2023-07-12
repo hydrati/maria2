@@ -1,6 +1,6 @@
-import type { Aria2DownloadGid } from './download'
-import type { RpcCall, RpcResult } from './jsonrpc'
-import type { Aria2RpcMethod } from './method'
+import type { Aria2DownloadGid } from './download.ts'
+import type { RpcCall, RpcResult } from './jsonrpc.ts'
+import type { Aria2RpcMethod } from './method.ts'
 
 export interface Aria2StringUtf8 {
   'utf-8': string

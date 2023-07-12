@@ -1,11 +1,11 @@
-import type { RpcCall, RpcResult } from './jsonrpc'
-import { Aria2ClientInputOptions } from './option'
+import type { RpcCall, RpcResult } from './jsonrpc.ts'
+import { Aria2ClientInputOptions } from './option.ts'
 import type {
   Aria2StringUtf8,
   Aria2ClientGidOpCall,
   Aria2ServerOpResult,
   Aria2ServerVoidCall,
-} from './utils'
+} from './utils.ts'
 
 export type Aria2DownloadGid = string
 

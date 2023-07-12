@@ -45,7 +45,7 @@ import type {
   Aria2UnpauseAllResult,
   Aria2UnpauseCall,
   Aria2UnpauseResult,
-} from './download'
+} from './download.ts'
 
 import type {
   Aria2ChangeGlobalOptionCall,
@@ -56,7 +56,7 @@ import type {
   Aria2GetGlobalOptionResult,
   Aria2GetOptionCall,
   Aria2GetOptionResult,
-} from './option'
+} from './option.ts'
 
 import type {
   Aria2ForceShutdownCall,
@@ -71,7 +71,7 @@ import type {
   Aria2SaveSessionResult,
   Aria2ShutdownCall,
   Aria2ShutdownResult,
-} from './server'
+} from './server.ts'
 
 import type {
   Aria2SystemListMethodsCall,
@@ -80,7 +80,7 @@ import type {
   Aria2SystemListNotificationsResult,
   Aria2SystemMulticallCall,
   Aria2SystemMulticallResult,
-} from './system'
+} from './system.ts'
 
 export type Aria2RpcMethodCallMap = Aria2ClientMethodCallMap &
   Aria2SystemMethodCallMap

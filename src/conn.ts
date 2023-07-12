@@ -1,4 +1,4 @@
-import { type Disposable } from './utils'
+import { type Disposable } from './utils.ts'
 
 /**
  * Ready state of the socket.

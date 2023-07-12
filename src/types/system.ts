@@ -1,5 +1,5 @@
-import type { Aria2ServerVoidCall } from './utils'
-import type { RpcCall, RpcResult } from './jsonrpc'
+import type { Aria2ServerVoidCall } from './utils.ts'
+import type { RpcCall, RpcResult } from './jsonrpc.ts'
 import type {
   Aria2RpcMethod,
   Aria2RpcMethodCallMap,

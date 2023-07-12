@@ -1,5 +1,5 @@
-import type { Aria2ServerOpResult, Aria2ServerVoidCall } from './utils'
-import type { RpcResult } from './jsonrpc'
+import type { Aria2ServerOpResult, Aria2ServerVoidCall } from './utils.ts'
+import type { RpcResult } from './jsonrpc.ts'
 
 export interface Aria2ServerVersion {
   /**

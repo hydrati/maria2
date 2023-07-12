@@ -16,31 +16,31 @@ export type {
   Aria2ServersInfoItem,
   Aria2UriStatus,
   Aria2UriStatusString,
-} from './download'
+} from './download.ts'
 
-export type { RpcCall, RpcResult } from './jsonrpc'
+export type { RpcCall, RpcResult } from './jsonrpc.ts'
 
-export type { Aria2RpcMethod } from './method'
+export type { Aria2RpcMethod } from './method.ts'
 
 export type {
   Aria2ClientNotificationMethod,
   Aria2ClientNotification,
   Aria2ClientNotificationParams,
-} from './notification'
+} from './notification.ts'
 
 export type {
   Aria2ClientGlobalOptionKey,
   Aria2ClientInputOptions,
   Aria2ClientGlobalOptions,
   Aria2ClientInputOptionKey,
-} from './option'
+} from './option.ts'
 
 export type {
   Aria2ServerGlobalStat,
   Aria2ServerVersion,
   Aria2ServerSessionInfo,
-} from './server'
+} from './server.ts'
 
-export type { Aria2SystemMulticallParams } from './system'
+export type { Aria2SystemMulticallParams } from './system.ts'
 
-export type { Aria2StringUtf8 } from './utils'
+export type { Aria2StringUtf8 } from './utils.ts'
