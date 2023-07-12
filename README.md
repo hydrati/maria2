@@ -11,10 +11,6 @@ Modern & Simple RPC Library for aria2.
 - Browser and Node.js Support.
 
 ## Getting Started
-- Install this package
-```sh
-pnpm i maria2
-```
 
 - If you are using Deno, just import it.
 ```ts
@@ -22,8 +18,10 @@ pnpm i maria2
 import { open, aria2, system } from 'https://deno.land/x/maria2/index.ts'
 ```
 
-- If you are using Node.js, you have to install peer dependencies.
+- If you are using Node.js, install this package.
 ```sh
+pnpm i maria2
+
 # For Node.js *
 pnpm i ws
 pnpm i -D @types/ws # TypeScript Support
