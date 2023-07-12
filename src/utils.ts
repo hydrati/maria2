@@ -14,11 +14,12 @@ export const once = <T extends unknown[], R>(
     triggered ? ret : ((triggered = true), (ret = fn(...args)))
 }
 
-const isNodeEnv = globalThis?.global?.process?.versions?.node != null
+const isNodeEnv = (globalThis as any)?.global?.process?.versions?.node != null
 
 // @ts-ignore
 export const WebSocket =
-  globalThis.WebSocket ?? (isNodeEnv ? (await import('ws')).default : void 0)
+  (globalThis as any)?.WebSocket ??
+  (isNodeEnv ? (await import('ws')).default : void 0)
 
 // @ts-ignore
 export const fetch =

@@ -103,7 +103,7 @@ export const open = async (socket: Socket, secret?: string): Promise<Conn> => {
             secret != null && useSecret
               ? [`token:${secret}`, ...params]
               : params,
-        } satisfies RpcCall)
+        })
 
         try {
           socket.send(body)

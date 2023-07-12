@@ -4,7 +4,7 @@ import type {
   Aria2RpcMethod,
   Aria2RpcMethodCallMap,
   Aria2RpcMethodResultMap,
-} from './method'
+} from './method.ts'
 
 export type Aria2SystemListNotificationsCall =
   Aria2ServerVoidCall<'system.listNotifications'>
