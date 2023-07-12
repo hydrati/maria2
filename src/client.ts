@@ -1,3 +1,4 @@
+import type { Disposable } from './types/disposable.ts'
 import type {
   Aria2ClientNotificationParams,
   Aria2ClientNotificationMethod,
@@ -20,9 +21,6 @@ import type {
   Aria2SystemMulticallParams,
   Aria2SystemMulticallParamsToResult,
 } from './types/system.ts'
-export interface Disposable<T = void> {
-  dispose(): T
-}
 
 export type TrimStart<T, U extends string> = T extends `${U}${infer P}` ? P : T
 
