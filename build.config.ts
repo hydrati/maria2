@@ -4,6 +4,7 @@ export default defineBuildConfig({
   entries: ['src/index'],
   declaration: true,
   clean: true,
+  externals: ['npm:uuid'],
   rollup: {
     emitCJS: false,
     esbuild: {
