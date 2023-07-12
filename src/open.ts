@@ -140,6 +140,7 @@ export const open = async (
   }
 }
 
+// @ts-ignore
 export const system = Object.freeze(
   Object.assign(
     {
@@ -172,6 +173,7 @@ export const system = Object.freeze(
   )
 ) as Readonly<ClientSystem>
 
+// @ts-ignore
 export const aria2 = Object.freeze(
   Object.assign(
     {
