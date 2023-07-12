@@ -16,6 +16,7 @@ Modern & Simple RPC Library for aria2.
 ```ts
 // See https://deno.land/x/maria2
 import { open, aria2, system } from 'https://deno.land/x/maria2/index.ts'
+import { createHTTP, createWebSocket } from 'https://deno.land/x/maria2/transport.ts'
 ```
 
 - If you are using Node.js, install this package.
@@ -42,7 +43,7 @@ import { open, aria2 } from 'maria2'
 const conn = await open(
   new WebSocket('ws://localhost:6800/jsonrpc')
 
-  // import { createWebSocket } from 'maria2'
+  // import { createWebSocket } from 'maria2/transport'
   // createWebSocket('ws://localhost:6800/jsonrpc')
 )
 
@@ -51,7 +52,8 @@ const version = await aria2.getVersion(conn)
 
 - Connect by HTTP
 ```ts
-import { open, createHTTP, aria2 } from 'maria2'
+import { open, aria2 } from 'maria2'
+import { createHTTP } from 'maria2/transport'
 
 const conn = await open(
   createHTTP('http://localhost:6800/jsonrpc')

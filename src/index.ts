@@ -1,5 +1,4 @@
 export { open, close, aria2, system } from './open.ts'
-export { createHTTP, createWebSocket } from './transport.ts'
 export { ReadyState } from './conn.ts'
 export type { Aria2RpcHTTPUrl, Aria2RpcWebSocketUrl } from './transport.ts'
 export type { ClientAria2, ClientSystem } from './client.ts'

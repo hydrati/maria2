@@ -32,6 +32,11 @@
       "default": "./dist/index.mjs",
       "import": "./dist/index.mjs",
       "types": "./dist/index.d.ts"
+    },
+    "./transport": {
+      "default": "./dist/transport.mjs",
+      "import": "./dist/transport.mjs",
+      "types": "./dist/transport.d.ts"
     }
   },
   "module": "dist/index.mjs",

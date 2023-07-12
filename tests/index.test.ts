@@ -8,9 +8,8 @@ describe('without global', async () => {
   })
 
   it('createWebSocket should work', async () => {
-    const { open, close, createWebSocket, aria2, ReadyState } = await import(
-      '../src'
-    )
+    const { open, close, aria2, ReadyState } = await import('../src')
+    const { createWebSocket } = await import('../src/transport')
 
     const socket = createWebSocket('ws://localhost:6800/jsonrpc')
     const conn = await open(socket)
@@ -23,9 +22,8 @@ describe('without global', async () => {
   })
 
   it('createHTTP should work', async () => {
-    const { open, createHTTP, aria2, system, close, ReadyState } = await import(
-      '../src'
-    )
+    const { open, aria2, system, close, ReadyState } = await import('../src')
+    const { createHTTP } = await import('../src/transport')
 
     const socket = createHTTP('http://localhost:6800/jsonrpc')
     const conn = await open(socket)
@@ -45,9 +43,8 @@ describe('normal', async () => {
   })
 
   it('createWebSocket should work', async () => {
-    const { open, close, createWebSocket, aria2, ReadyState } = await import(
-      '../src'
-    )
+    const { open, close, aria2, ReadyState } = await import('../src')
+    const { createWebSocket } = await import('../src/transport')
 
     const socket = createWebSocket('ws://localhost:6800/jsonrpc')
     const conn = await open(socket)
@@ -61,9 +58,8 @@ describe('normal', async () => {
   })
 
   it('createHTTP should work', async () => {
-    const { open, createHTTP, aria2, system, close, ReadyState } = await import(
-      '../src'
-    )
+    const { open, close, aria2, ReadyState } = await import('../src')
+    const { createHTTP } = await import('../src/transport')
 
     const socket = createHTTP('http://localhost:6800/jsonrpc')
     const conn = await open(socket)
