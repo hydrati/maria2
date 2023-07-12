@@ -26,11 +26,8 @@ pnpm i maria2
 pnpm i ws
 pnpm i -D @types/ws # TypeScript Support
 
-# For Node.js <16.7.0
+# For Node.js <v15.6.0, <v14.17.0
 pnpm i uuid
-
-# For Node.js <18.0.0
-pnpm i cross-fetch
 ```
 
 - Run `aria2c` with RPC options, for example
