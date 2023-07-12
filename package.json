@@ -43,12 +43,8 @@
   "types": "dist/index.d.ts",
   "typesVersions": {
     "*": {
-      "*": [],
-      ".": [
-        "./dist/index.d.ts"
-      ],
-      "transport": [
-        "./dist/transport.d.ts"
+      "*": [
+        "./dist/*"
       ]
     }
   },
