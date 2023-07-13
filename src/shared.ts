@@ -17,15 +17,8 @@ export const randomUUID = await (async () => {
     return () => globalThis.crypto.randomUUID()
   } else {
     if (isNodeEnv) {
-      const nodeCrypto = await import('node:crypto')
-      if (nodeCrypto?.randomUUID != null) {
-        return () => nodeCrypto.randomUUID()
-      }
-
-      const uuidV4 = (await import('uuid'))?.v4
-      if (uuidV4 != null) {
-        return () => uuidV4()
-      }
+      const nodeUUID = (await import('./shims/node.ts')).randomUUID
+      if (nodeUUID != null) return nodeUUID
     }
 
     console.warn(
