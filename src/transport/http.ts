@@ -17,7 +17,7 @@ const createPost = await (async () => {
       })
   } else if (isNodeEnv) {
     return (await import('../shims/node.ts')).httpPost
-  } else if (globalThis.XMLHttpRequest != null) {
+  } else if ((globalThis as any).XMLHttpRequest != null) {
     return (await import('../shims/xhr.ts')).xhrPost
   } else {
     return () => {

@@ -1,6 +1,6 @@
 export const xhrPost = (url: string, json: string) =>
   new Promise<string>((onResolve, onReject) => {
-    const xhr = new globalThis.XMLHttpRequest()
+    const xhr = new (globalThis as any).XMLHttpRequest()
     xhr.onload = () =>
       xhr.status == 200 ? onResolve(xhr.responseText) : onReject(xhr)
 
