@@ -1,10 +1,13 @@
 import type { ClientAria2, ClientSystem } from './client.ts'
-import {
-  ReadyState,
-  type Conn,
-  type Socket,
+import type {
+  Conn,
+  Socket,
   SendRequestOptions,
+  OpenOptions,
+  Open,
+  PreconfiguredSocket,
 } from './conn.ts'
+import { ReadyState } from './conn.ts'
 import { once, decodeMessageData, useTimeout } from './shared.ts'
 import type { Disposable } from './types/disposable.ts'
 import { randomUUID } from './shared.ts'
@@ -21,31 +24,14 @@ const createCallback = <T>(
 export const close = (conn: Conn, code?: number, reason?: string) =>
   conn.getSocket().close(code, reason)
 
-export interface OpenOptions {
-  secret?: string
-  onServerError?: (err: any) => void
-
-  /**
-   * Timeout for each request (ms).
-   * @default 5000
-   * @public
-   */
-  timeout?: number
-
-  /**
-   * Timeout for waiting socket (ms).
-   * @default 5000
-   * @public
-   */
-  openTimeout?: number
-}
-
-export const open = async (
-  socket: Socket,
+export const open: Open = async (
+  socket: Socket | PreconfiguredSocket,
   options: OpenOptions = {}
 ): Promise<Conn> => {
   const { onServerError, secret, timeout, openTimeout } = Object.assign(
     { timeout: 5000, openTimeout: 5000 },
+    (socket as PreconfiguredSocket).getOptions != null &&
+      (socket as PreconfiguredSocket).getOptions(),
     options
   )
 

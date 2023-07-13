@@ -59,7 +59,8 @@
     "release": "bumpp --commit --push --tag && pnpm publish",
     "test": "vitest",
     "typecheck": "tsc --noEmit",
-    "preversion": "pnpm typecheck && pnpm build"
+    "preversion": "pnpm typecheck && pnpm build",
+    "denocheck": "deno check --no-npm ./index.ts && deno check --no-npm ./transport.ts"
   },
   "devDependencies": {
     "@types/node": "^20.4.1",

@@ -1,4 +1,9 @@
-import { type Socket, type ReadyState } from '../conn.ts'
+import {
+  type Socket,
+  type ReadyState,
+  OpenOptions,
+  PreconfiguredSocket,
+} from '../conn.ts'
 import { isNodeEnv } from '../shared.ts'
 
 const createPost = await (async () => {
@@ -26,11 +31,19 @@ const createPost = await (async () => {
   }
 })()
 
+export interface CreateHTTP {
+  (url: Aria2RpcHTTPUrl): Socket
+  (url: Aria2RpcHTTPUrl, options: Partial<OpenOptions>): PreconfiguredSocket
+}
+
 export type Aria2RpcHTTPUrl =
   | `${'http' | 'https'}://${string}:${number}/jsonrpc`
   | `${'http' | 'https'}://${string}/jsonrpc`
 
-export const createHTTP = (url: Aria2RpcHTTPUrl) => {
+export const createHTTP: CreateHTTP = (
+  url: Aria2RpcHTTPUrl,
+  options?: Partial<OpenOptions>
+) => {
   return new (class extends EventTarget {
     readyState: ReadyState = 1
 
@@ -38,10 +51,16 @@ export const createHTTP = (url: Aria2RpcHTTPUrl) => {
       this.readyState = 3
     }
 
+    getOptions() {
+      return options
+    }
+
     send(data: string): void {
       createPost(url, data).then((data: string) => {
         this.dispatchEvent(new MessageEvent('message', { data }))
       })
     }
-  })() as unknown as Socket
+  })() as any
 }
+
+createHTTP('http://127.0.0.1:6800/jsonrpc')

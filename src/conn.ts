@@ -1,5 +1,24 @@
 import { type Disposable } from './types/disposable.ts'
 
+export interface OpenOptions {
+  secret?: string
+  onServerError?: (err: any) => void
+
+  /**
+   * Timeout for each request (ms).
+   * @default 5000
+   * @public
+   */
+  timeout?: number
+
+  /**
+   * Timeout for waiting socket (ms).
+   * @default 5000
+   * @public
+   */
+  openTimeout?: number
+}
+
 /**
  * Ready state of the socket.
  */
@@ -8,6 +27,10 @@ export enum ReadyState {
   Open = 1,
   Closing = 2,
   Closed = 3,
+}
+
+export interface PreconfiguredSocket extends Socket {
+  getOptions(): Partial<OpenOptions>
 }
 
 export interface Socket {
@@ -72,4 +95,8 @@ export interface Conn {
 
   getSecret(): string | undefined
   getSocket(): Socket
+}
+
+export interface Open {
+  (socket: Socket | PreconfiguredSocket, options?: OpenOptions): Promise<Conn>
 }

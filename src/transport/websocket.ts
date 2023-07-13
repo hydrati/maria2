@@ -1,4 +1,4 @@
-import type { Socket } from '../conn.ts'
+import type { OpenOptions, PreconfiguredSocket, Socket } from '../conn.ts'
 import { isNodeEnv } from '../shared.ts'
 
 // @ts-ignore
@@ -16,10 +16,29 @@ export type Aria2RpcWebSocketUrl =
   | `${'ws' | 'wss'}://${string}:${number}/jsonrpc`
   | `${'ws' | 'wss'}://${string}/jsonrpc`
 
-export const createWebSocket = (url: Aria2RpcWebSocketUrl) => {
+export interface CreateWebSocket {
+  (url: Aria2RpcWebSocketUrl): Socket
+  (
+    url: Aria2RpcWebSocketUrl,
+    options: Partial<OpenOptions>
+  ): PreconfiguredSocket
+}
+
+export const createWebSocket: CreateWebSocket = (
+  url: Aria2RpcWebSocketUrl,
+  options?: Partial<OpenOptions>
+) => {
   if (WebSocket == null) {
     throw new Error('Not Found `WebSocket()` in globalThis or require()')
   }
 
-  return new WebSocket(url) as Socket
+  return new (class extends WebSocket {
+    constructor(url: string) {
+      super(url)
+    }
+
+    getOptions() {
+      return options
+    }
+  })(url) as any
 }
