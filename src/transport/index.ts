@@ -1,6 +1,6 @@
 export { createHTTP } from './http.ts'
 export { createWebSocket } from './websocket.ts'
 export { ReadyState } from '../conn.ts'
-export type { Socket } from '../conn.ts'
+export type { Socket, PreconfiguredSocket } from '../conn.ts'
 export type { CreateHTTP, Aria2RpcHTTPUrl } from './http.ts'
 export type { CreateWebSocket, Aria2RpcWebSocketUrl } from './websocket.ts'
