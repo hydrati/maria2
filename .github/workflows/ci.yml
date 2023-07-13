@@ -32,5 +32,5 @@ jobs:
 
       - name: Test
         run: |
-          aria2c --enable-rpc=true --rpc-listen-all=true --rpc-allow-origin-all=true --rpc-listen-port=6800 &
+          aria2c --enable-rpc=true --rpc-listen-all=true --rpc-allow-origin-all=true --rpc-listen-port=6800 --rpc-secret=123456 &
           pnpm test
