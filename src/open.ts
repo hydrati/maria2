@@ -72,9 +72,9 @@ export const open: Open = async (
       openTimeout
     )
   } else if (socket.readyState == ReadyState.Closing) {
-    throw new Error('Socket is closing')
+    throw new Error('[maria2 error] Socket is closing')
   } else if (socket.readyState == ReadyState.Closed) {
-    throw new Error('Socket is closed')
+    throw new Error('[maria2 error] Socket is closed')
   }
 
   socket.addEventListener('message', handleMessage)

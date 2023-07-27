@@ -8,7 +8,9 @@ const WebSocket =
     ? (await import('ws')).default
     : class {
         constructor() {
-          throw new Error('Not found any http client implementation.')
+          throw new Error(
+            '[maria2 error] WebSocket client implementation is missing'
+          )
         }
       })
 
@@ -29,7 +31,7 @@ export const createWebSocket: CreateWebSocket = (
   options?: Partial<OpenOptions>
 ) => {
   if (WebSocket == null) {
-    throw new Error('Not Found `WebSocket()` in globalThis or require()')
+    throw new Error('[maria2 error] WebSocket client implementation is missing')
   }
 
   return new (class extends WebSocket {

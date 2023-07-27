@@ -26,7 +26,7 @@ const createPost = await (async () => {
     return (await import('../shims/xhr.ts')).xhrPost
   } else {
     return () => {
-      throw new Error('Not found any http client implementation.')
+      throw new Error('[maria2 error] HTTP client implementation is missing')
     }
   }
 })()

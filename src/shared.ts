@@ -1,3 +1,7 @@
+export const isDev =
+  process.env['NODE_ENV'] != 'production' ||
+  (globalThis as any)?.Deno?.env?.get?.('NODE_ENV') != 'production'
+
 export const isNodeEnv =
   (globalThis as any)?.global?.process?.versions?.node != null
 
@@ -21,10 +25,28 @@ export const randomUUID = await (async () => {
       if (nodeUUID != null) return nodeUUID
     }
 
-    console.warn(
-      '[warn] Not found `crypto.randomUUID()` in this environment; ' +
-        'switching to fallback (unsafe)'
-    )
+    if (typeof Math.random == 'function') {
+      if (isDev) {
+        console.warn(
+          '[maria2 warn] Not found `crypto.randomUUID()` in this environment; ' +
+            'switching to fallback (Math.random)'
+        )
+      }
+
+      return () =>
+        [Math.random(), Math.random(), Math.random()]
+          .map((v) => v.toString(16).slice(2))
+          .join('')
+          .slice(0, 32)
+          .padStart(32, '0')
+    }
+
+    if (isDev) {
+      console.warn(
+        '[maria2 warn] Not found `crypto.randomUUID()` in this environment; ' +
+          'switching to fallback (unsafe counting)'
+      )
+    }
 
     let count = 0
     return () => (count += 1).toString()
@@ -43,7 +65,7 @@ export const useTimeout = <T>(
     p,
     sleep(ms).then(() => {
       onTimeout?.()
-      throw new Error(`Timeout of ${ms}ms exceeded`)
+      throw new Error(`[maria2 error] Timeout of ${ms}ms exceeded`)
     }),
   ])
 
@@ -68,6 +90,6 @@ export const decodeMessageData = (data: any) => {
     }
     return out.join('')
   } else {
-    throw new Error('Data cannot be decoded')
+    throw new Error('[maria2 error] Message data cannot be decoded')
   }
 }
