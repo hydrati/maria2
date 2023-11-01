@@ -226,7 +226,6 @@ export const aria2 = Object.freeze(
       obj[methodName.slice(6)] = (conn: Conn, ...args: unknown[]) =>
         conn.sendRequest(
           { method: methodName, secret: true },
-          methodName,
           ...args
         )
       return obj
