@@ -479,10 +479,10 @@ export type Aria2TellStatusParamsToResult<T extends Aria2TellStatusParams> =
     T[1] extends void
       ? Aria2DownloadStatus
       : NonNullable<T[1]> extends
-          | [keyof Aria2DownloadStatus]
-          | (keyof Aria2DownloadStatus)[]
-      ? Pick<Aria2DownloadStatus, NonNullable<T[1]>[number]>
-      : Aria2DownloadStatus
+            | [keyof Aria2DownloadStatus]
+            | (keyof Aria2DownloadStatus)[]
+        ? Pick<Aria2DownloadStatus, NonNullable<T[1]>[number]>
+        : Aria2DownloadStatus
   >
 
 export type Aria2TellStatusListParamsToResult<
@@ -495,10 +495,10 @@ export type Aria2TellStatusListParamsToResult<
     T extends void
       ? Aria2DownloadStatus
       : NonNullable<T> extends
-          | [keyof Aria2DownloadStatus]
-          | (keyof Aria2DownloadStatus)[]
-      ? Pick<Aria2DownloadStatus, NonNullable<T>[number]>
-      : Aria2DownloadStatus
+            | [keyof Aria2DownloadStatus]
+            | (keyof Aria2DownloadStatus)[]
+        ? Pick<Aria2DownloadStatus, NonNullable<T>[number]>
+        : Aria2DownloadStatus
   >
 >
 

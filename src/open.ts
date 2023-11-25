@@ -119,8 +119,8 @@ export const open: Open = async (
       return timeout_ === false
         ? p
         : typeof timeout_ == 'number'
-        ? useTimeout(p, timeout_, () => callbacks.delete(id))
-        : useTimeout(p, timeout, () => callbacks.delete(id))
+          ? useTimeout(p, timeout_, () => callbacks.delete(id))
+          : useTimeout(p, timeout, () => callbacks.delete(id))
     },
 
     onNotification: <T extends (...args: unknown[]) => void>(
