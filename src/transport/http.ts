@@ -22,8 +22,6 @@ const createPost = await (async () => {
       })
   } else if (isNodeEnv) {
     return (await import('../shims/node.ts')).httpPost
-  } else if ((globalThis as any).XMLHttpRequest != null) {
-    return (await import('../shims/xhr.ts')).xhrPost
   } else {
     return () => {
       throw new Error('[maria2 error] HTTP client implementation is missing')
