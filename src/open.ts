@@ -94,7 +94,7 @@ export const open: Open = async (
       const id = randomUUID()
       const p = new Promise<T>((onResolve, onReject) => {
         if (socket.readyState != ReadyState.Open) {
-          return onReject(new Error('Socket is not open'))
+          return onReject(new Error('[maria2 error] Socket is not open'))
         }
 
         callbacks.set(id, createCallback(id, onResolve, onReject))
@@ -106,7 +106,7 @@ export const open: Open = async (
           params:
             secret != null && useSecret
               ? [`token:${secret}`, ...params]
-              : params,
+              : [...params],
         })
 
         try {
@@ -166,18 +166,11 @@ export const system = Object.freeze(
         )
       },
     },
-    ['system.listMethods', 'system.listNotifications'].reduce(
-      (obj, methodName) => {
-        obj[methodName.slice(7)] = (conn: Conn, ...args: unknown[]) =>
-          conn.sendRequest(
-            { method: methodName, secret: false },
-            methodName,
-            ...args
-          )
-        return obj
-      },
-      {} as any
-    )
+    ['system.listMethods', 'system.listNotifications'].reduce((obj, method) => {
+      obj[method.slice(7)] = (conn: Conn, ...args: unknown[]) =>
+        conn.sendRequest({ method, secret: false }, ...args)
+      return obj
+    }, {} as any)
   )
 ) as Readonly<ClientSystem>
 
@@ -222,12 +215,9 @@ export const aria2 = Object.freeze(
       'aria2.addMetalink',
       'aria2.addTorrent',
       'aria2.addUri',
-    ].reduce((obj, methodName) => {
-      obj[methodName.slice(6)] = (conn: Conn, ...args: unknown[]) =>
-        conn.sendRequest(
-          { method: methodName, secret: true },
-          ...args
-        )
+    ].reduce((obj, method) => {
+      obj[method.slice(6)] = (conn: Conn, ...args: unknown[]) =>
+        conn.sendRequest({ method: method, secret: true }, ...args)
       return obj
     }, {} as any),
     [
