@@ -1,4 +1,4 @@
-import { decodeMessageData } from '../shared.ts'
+import { decodeMessageData } from './decode.ts'
 
 export const randomUUID = await (async () => {
   const nodeCrypto = await import('node:crypto')
