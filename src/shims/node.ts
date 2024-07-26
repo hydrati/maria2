@@ -1,5 +1,3 @@
-import { decodeMessageData } from './decode.ts'
-
 export const randomUUID = await (async () => {
   const nodeCrypto = await import('node:crypto')
   if (nodeCrypto?.randomUUID != null) {
@@ -27,7 +25,10 @@ export const httpPost = await (async () => {
             'content-length': Buffer.byteLength(json),
           },
         },
-        (res) => {
+        async (res) => {
+          // dynamic import decoder
+          const { decodeMessageData } = await import('./decode.ts')
+
           res.setEncoding('utf8')
 
           const chunks: any[] = []
