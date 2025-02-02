@@ -39,7 +39,6 @@
     "bundle": "pkgroll --minify --sourcemap --clean-dist",
     "lint": "eslint .",
     "release": "bumpp --commit --push --tag && bun publish",
-    "test": "vitest",
     "typecheck": "tsc --noEmit",
     "preversion": "bun typecheck && bun bundle"
   },

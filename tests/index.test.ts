@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it } from 'bun:test'
 
 describe('maria2', async () => {
   it('createWebSocket should work', async () => {
@@ -8,12 +8,13 @@ describe('maria2', async () => {
     const socket = createWebSocket('ws://localhost:6800/jsonrpc')
     const conn = await open(socket, { secret: '123456' })
 
-    expect(await aria2.getVersion(conn))
-      .property('enabledFeatures')
-      .satisfies(Array.isArray)
+    const result = await aria2.getVersion(conn)
+    expect(result).toHaveProperty('enabledFeatures')
+    expect(result.enabledFeatures).toBeArray()
 
     close(conn)
-    expect(socket.readyState).oneOf([ReadyState.Closing, ReadyState.Closed])
+
+    expect(socket.readyState).toSatisfy(x => [ReadyState.Closing, ReadyState.Closed].includes(x))
   })
 
   it('createHTTP should work', async () => {
@@ -22,13 +23,14 @@ describe('maria2', async () => {
 
     const socket = createHTTP('http://localhost:6800/jsonrpc')
     const conn = await open(socket, { secret: '123456' })
-    expect(await aria2.getVersion(conn))
-      .property('enabledFeatures')
-      .satisfies(Array.isArray)
+
+    const result = await aria2.getVersion(conn)
+    expect(result).toHaveProperty('enabledFeatures')
+    expect(result.enabledFeatures).toBeArray()
 
     close(conn)
 
-    expect(socket.readyState).oneOf([ReadyState.Closing, ReadyState.Closed])
+    expect(socket.readyState).toSatisfy(x => [ReadyState.Closing, ReadyState.Closed].includes(x))
   })
 
   it('createWebSocket(pre) should work', async () => {
@@ -40,12 +42,13 @@ describe('maria2', async () => {
     })
     const conn = await open(socket)
 
-    expect(await aria2.getVersion(conn))
-      .property('enabledFeatures')
-      .satisfies(Array.isArray)
+    const result = await aria2.getVersion(conn)
+    expect(result).toHaveProperty('enabledFeatures')
+    expect(result.enabledFeatures).toBeArray()
 
     close(conn)
-    expect(socket.readyState).oneOf([ReadyState.Closing, ReadyState.Closed])
+
+    expect(socket.readyState).toSatisfy(x => [ReadyState.Closing, ReadyState.Closed].includes(x))
   })
 
   it('createHTTP(pre) should work', async () => {
@@ -56,12 +59,13 @@ describe('maria2', async () => {
       secret: '123456',
     })
     const conn = await open(socket)
-    expect(await aria2.getVersion(conn))
-      .property('enabledFeatures')
-      .satisfies(Array.isArray)
+
+    const result = await aria2.getVersion(conn)
+    expect(result).toHaveProperty('enabledFeatures')
+    expect(result.enabledFeatures).toBeArray()
 
     close(conn)
 
-    expect(socket.readyState).oneOf([ReadyState.Closing, ReadyState.Closed])
+    expect(socket.readyState).toSatisfy(x => [ReadyState.Closing, ReadyState.Closed].includes(x))
   })
 })
