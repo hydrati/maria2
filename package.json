@@ -2,7 +2,6 @@
   "name": "maria2",
   "version": "0.3.4",
   "description": "Simple RPC Library for aria2",
-  "type": "module",
   "keywords": [
     "aria2",
     "download",
@@ -27,6 +26,7 @@
     "name": "Hydration",
     "url": "https://github.com/hydrati"
   },
+  "type": "module",
   "exports": {
     ".": {
       "default": "./dist/index.mjs",
@@ -55,12 +55,16 @@
   ],
   "scripts": {
     "build": "unbuild",
+    "denocheck": "deno check --no-npm ./index.ts && deno check --no-npm ./transport.ts",
     "format": "prettier --write src/**/*.ts",
     "release": "bumpp --commit --push --tag && pnpm publish",
     "test": "vitest",
     "typecheck": "tsc --noEmit",
-    "preversion": "pnpm typecheck && pnpm build",
-    "denocheck": "deno check --no-npm ./index.ts && deno check --no-npm ./transport.ts"
+    "preversion": "pnpm typecheck && pnpm build"
+  },
+  "dependencies": {
+    "uuid": "^9.0.1",
+    "ws": "^8.18.0"
   },
   "devDependencies": {
     "@types/node": "^20.14.12",
@@ -73,16 +77,12 @@
     "vite": "^5.3.5",
     "vitest": "^0.34.6"
   },
-  "packageManager": "pnpm@9.6.0",
-  "publishConfig": {
-    "access": "public",
-    "registry": "https://registry.npmjs.com"
-  },
+  "packageManager": "pnpm@9.15.4",
   "engines": {
     "node": ">= 14.8.0"
   },
-  "dependencies": {
-    "uuid": "^9.0.1",
-    "ws": "^8.18.0"
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.com"
   }
 }
