@@ -6,7 +6,7 @@ Modern & Simple RPC Library for aria2.
 `maria2` can control `aria2c` by its [RPC interface](https://aria2.github.io/manual/en/html/aria2c.html#rpc-interface).
 
 ## Features
-- Simple.
+- Simple and Light (Just `4.12KB` after minified)
 - Better TypeScript IDE Support.
 - Browser and Node.js Support.
 
@@ -14,8 +14,7 @@ Modern & Simple RPC Library for aria2.
 
 - If you are using Deno, just import it.
 ```ts
-// See https://deno.land/x/maria2
-import { open, aria2, system } from 'https://deno.land/x/maria2/index.ts'
+import { aria2, open, system } from 'https://deno.land/x/maria2/index.ts'
 import { createHTTP, createWebSocket } from 'https://deno.land/x/maria2/transport.ts'
 ```
 
@@ -38,7 +37,7 @@ aria2c --enable-rpc=true --rpc-listen-all=true --rpc-allow-origin-all=true --rpc
 
 - Connect by WebSocket
 ```ts
-import { open, aria2 } from 'maria2'
+import { aria2, open } from 'maria2'
 
 const conn = await open(
   new WebSocket('ws://localhost:6800/jsonrpc')
@@ -52,7 +51,7 @@ const version = await aria2.getVersion(conn)
 
 - Connect by HTTP
 ```ts
-import { open, aria2 } from 'maria2'
+import { aria2, open } from 'maria2'
 import { createHTTP } from 'maria2/transport'
 
 const conn = await open(

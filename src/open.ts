@@ -1,38 +1,34 @@
 import type { ClientAria2, ClientSystem } from './client.ts'
 import type {
   Conn,
-  Socket,
-  SendRequestOptions,
-  OpenOptions,
   Open,
+  OpenOptions,
   PreconfiguredSocket,
+  SendRequestOptions,
+  Socket,
 } from './conn.ts'
-import { ReadyState } from './conn.ts'
-import { once, decodeMessageData, useTimeout } from './shared.ts'
 import type { Disposable } from './types/disposable.ts'
-import { randomUUID } from './shared.ts'
+import { ReadyState } from './conn.ts'
+import { decode, once, useTimeout } from './shared.ts'
 
-const createCallback = <T>(
-  id: string,
-  onResolve: (v: T) => void,
-  onReject: (e: any) => void
-) => {
+function createCallback<T>(onResolve: (v: T) => void, onReject: (e: any) => void) {
   return (err: any, ret: unknown) =>
     err != null ? onReject(err) : onResolve(ret as T)
 }
 
-export const close = (conn: Conn, code?: number, reason?: string) =>
-  conn.getSocket().close(code, reason)
+export function close(conn: Conn, code?: number, reason?: string) {
+  return conn.socket.close(code, reason)
+}
 
 export const open: Open = async (
   socket: Socket | PreconfiguredSocket,
-  options: OpenOptions = {}
+  options: OpenOptions = {},
 ): Promise<Conn> => {
   const { onServerError, secret, timeout, openTimeout } = Object.assign(
     { timeout: 5000, openTimeout: 5000 },
-    (socket as PreconfiguredSocket).getOptions != null &&
-      (socket as PreconfiguredSocket).getOptions(),
-    options
+    (socket as PreconfiguredSocket).getOptions != null
+    && (socket as PreconfiguredSocket).getOptions(),
+    options,
   )
 
   const listeners = new Map<string, Set<(...args: any[]) => void>>()
@@ -47,10 +43,10 @@ export const open: Open = async (
   }
 
   const dispatchNotification = (body: any) =>
-    listeners.get(body.method)?.forEach((fn) => fn(...body.params))
+    listeners.get(body.method)?.forEach(fn => fn(...body.params))
 
-  const handleMessage = ({ data }: { data: unknown }) => {
-    const body = JSON.parse(decodeMessageData(data))
+  const handleMessage = async ({ data }: { data: ArrayBuffer | Blob | string }) => {
+    const body = JSON.parse(await decode(data))
 
     if (body.method != null) {
       dispatchNotification(body)
@@ -58,30 +54,33 @@ export const open: Open = async (
     }
 
     if (body.result != null || body.error != null) {
-      if (body.id != null) invokeCallback(body)
-      else if (body.error != null) onServerError?.(body.error)
-      return
+      if (body.id != null)
+        invokeCallback(body)
+      else if (body.error != null)
+        onServerError?.(body.error)
     }
   }
 
   if (socket.readyState == ReadyState.Connecting) {
     await useTimeout(
-      new Promise((r) =>
-        socket.addEventListener('open', () => r(null), { once: true })
+      new Promise(r =>
+        socket.addEventListener('open', () => r(null), { once: true }),
       ),
-      openTimeout
+      openTimeout,
     )
-  } else if (socket.readyState == ReadyState.Closing) {
+  }
+  else if (socket.readyState == ReadyState.Closing) {
     throw new Error('[maria2 error] Socket is closing')
-  } else if (socket.readyState == ReadyState.Closed) {
+  }
+  else if (socket.readyState == ReadyState.Closed) {
     throw new Error('[maria2 error] Socket is closed')
   }
 
   socket.addEventListener('message', handleMessage)
 
-  return {
-    getSocket: () => socket,
-    getSecret: () => secret,
+  return Object.freeze({
+    get socket() { return socket },
+    get secret() { return secret },
 
     sendRequest: <T>(
       {
@@ -91,13 +90,13 @@ export const open: Open = async (
       }: SendRequestOptions,
       ...params: any[]
     ) => {
-      const id = randomUUID()
+      const id = crypto.randomUUID()
       const p = new Promise<T>((onResolve, onReject) => {
         if (socket.readyState != ReadyState.Open) {
           return onReject(new Error('[maria2 error] Socket is not open'))
         }
 
-        callbacks.set(id, createCallback(id, onResolve, onReject))
+        callbacks.set(id, createCallback(onResolve, onReject))
 
         const body = JSON.stringify({
           jsonrpc: '2.0',
@@ -111,7 +110,8 @@ export const open: Open = async (
 
         try {
           socket.send(body)
-        } catch (err: any) {
+        }
+        catch (err: any) {
           onReject(err)
         }
       })
@@ -125,7 +125,7 @@ export const open: Open = async (
 
     onNotification: <T extends (...args: unknown[]) => void>(
       type: string,
-      listener: T
+      listener: T,
     ): Disposable<T> => {
       let bucket = listeners.get(type)
       bucket || listeners.set(type, (bucket = new Set()))
@@ -139,15 +139,14 @@ export const open: Open = async (
         }),
       }
     },
-  }
+  })
 }
 
-// @ts-ignore
 export const system = Object.freeze(
   Object.assign(
     {
       multicall: (conn: Conn, ...args: any[]) => {
-        const secret = conn.getSecret()
+        const secret = conn.secret
 
         if (secret != null) {
           return conn.sendRequest(
@@ -156,13 +155,13 @@ export const system = Object.freeze(
               const obj = Object.assign({}, v)
               obj.params = [`token:${secret}`, ...obj.params]
               return obj
-            })
+            }),
           )
         }
 
         return conn.sendRequest(
           { method: 'system.multicall', secret: false },
-          args
+          args,
         )
       },
     },
@@ -170,11 +169,10 @@ export const system = Object.freeze(
       obj[method.slice(7)] = (conn: Conn, ...args: unknown[]) =>
         conn.sendRequest({ method, secret: false }, ...args)
       return obj
-    }, {} as any)
-  )
+    }, {} as any),
+  ),
 ) as Readonly<ClientSystem>
 
-// @ts-ignore
 export const aria2 = Object.freeze(
   Object.assign(
     {
@@ -217,7 +215,7 @@ export const aria2 = Object.freeze(
       'aria2.addUri',
     ].reduce((obj, method) => {
       obj[method.slice(6)] = (conn: Conn, ...args: unknown[]) =>
-        conn.sendRequest({ method: method, secret: true }, ...args)
+        conn.sendRequest({ method, secret: true }, ...args)
       return obj
     }, {} as any),
     [
@@ -231,6 +229,6 @@ export const aria2 = Object.freeze(
       obj[methodName.slice(6)] = (conn: Conn, h: any) =>
         conn.onNotification(methodName, h)
       return obj
-    }, {} as any)
-  )
+    }, {} as any),
+  ),
 ) as Readonly<ClientAria2>

@@ -1,10 +1,10 @@
-import type { Aria2ServerVoidCall } from './utils.ts'
 import type { RpcCall, RpcResult } from './jsonrpc.ts'
 import type {
   Aria2RpcMethod,
   Aria2RpcMethodCallMap,
   Aria2RpcMethodResultMap,
 } from './method.ts'
+import type { Aria2ServerVoidCall } from './utils.ts'
 
 export type Aria2SystemListNotificationsCall =
   Aria2ServerVoidCall<'system.listNotifications'>
@@ -16,7 +16,7 @@ export type Aria2SystemListMethodsCall =
 
 export type Aria2SystemListMethodsResult = RpcResult<string[]>
 
-export type Aria2SystemMulticallItem<T extends string, TParams> = {
+export interface Aria2SystemMulticallItem<T extends string, TParams> {
   methodName: T
   params: TParams
 }

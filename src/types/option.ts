@@ -1,10 +1,10 @@
 import type { Aria2DownloadGid } from './download.ts'
+import type { RpcCall, RpcResult } from './jsonrpc.ts'
 import type {
   Aria2ClientGidOpCall,
   Aria2ServerOpResult,
   Aria2ServerVoidCall,
 } from './utils.ts'
-import type { RpcCall, RpcResult } from './jsonrpc.ts'
 
 export type Aria2ClientInputOptionKey =
   | 'all-proxy'
@@ -133,9 +133,9 @@ export type Aria2ClientGlobalOptionKey =
   | 'save-session'
   | 'server-stat-of'
   | Exclude<
-      Aria2ClientInputOptionKey,
+    Aria2ClientInputOptionKey,
       'checksum' | 'index-out' | 'out' | 'pause' | 'select-file'
-    >
+  >
 
 export type Aria2ClientInputOptions = Partial<
   Record<Aria2ClientInputOptionKey, any>

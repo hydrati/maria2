@@ -1,10 +1,10 @@
 import type { RpcCall, RpcResult } from './jsonrpc.ts'
-import { Aria2ClientInputOptions } from './option.ts'
+import type { Aria2ClientInputOptions } from './option.ts'
 import type {
-  Aria2StringUtf8,
   Aria2ClientGidOpCall,
   Aria2ServerOpResult,
   Aria2ServerVoidCall,
+  Aria2StringUtf8,
 } from './utils.ts'
 
 export type Aria2DownloadGid = string
@@ -202,7 +202,8 @@ export interface Aria2PeerInfo {
    */
   ip: string
 
-  /** `
+  /**
+   * `
    * "true"` if the peer is choking aria2. Otherwise `"false"`.
    * @public
    */
@@ -344,7 +345,8 @@ export interface Aria2DownloadStatus {
    * The highest bit corresponds to the piece at index 0.
    * Any set bits indicate loaded pieces, while unset bits indicate not yet loaded and/or missing pieces.
    * Any overflow bits at the end are set to zero.
-   * When the download was not started yet, this key will not be included in the response. */
+   * When the download was not started yet, this key will not be included in the response.
+   */
   bitfield: string
 
   /**
@@ -368,7 +370,7 @@ export interface Aria2DownloadStatus {
   /**
    * InfoHash. BitTorrent only.
    * @public
-   * */
+   */
   infoHash?: string
 
   /**
@@ -383,7 +385,8 @@ export interface Aria2DownloadStatus {
    */
   seeder?: 'true' | 'false'
 
-  /** Piece length in bytes.
+  /**
+   * Piece length in bytes.
    *
    * This number can be too large, you should parse with `BigInt`.
    *
@@ -479,24 +482,24 @@ export type Aria2TellStatusParamsToResult<T extends Aria2TellStatusParams> =
     T[1] extends void
       ? Aria2DownloadStatus
       : NonNullable<T[1]> extends
-            | [keyof Aria2DownloadStatus]
-            | (keyof Aria2DownloadStatus)[]
+      | [keyof Aria2DownloadStatus]
+      | (keyof Aria2DownloadStatus)[]
         ? Pick<Aria2DownloadStatus, NonNullable<T[1]>[number]>
         : Aria2DownloadStatus
   >
 
 export type Aria2TellStatusListParamsToResult<
   T extends
-    | [keyof Aria2DownloadStatus]
-    | (keyof Aria2DownloadStatus)[]
-    | undefined,
+  | [keyof Aria2DownloadStatus]
+  | (keyof Aria2DownloadStatus)[]
+  | undefined,
 > = RpcResult<
   Array<
     T extends void
       ? Aria2DownloadStatus
       : NonNullable<T> extends
-            | [keyof Aria2DownloadStatus]
-            | (keyof Aria2DownloadStatus)[]
+      | [keyof Aria2DownloadStatus]
+      | (keyof Aria2DownloadStatus)[]
         ? Pick<Aria2DownloadStatus, NonNullable<T>[number]>
         : Aria2DownloadStatus
   >

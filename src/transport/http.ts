@@ -1,62 +1,58 @@
-import {
-  type Socket,
-  type ReadyState,
+import type {
   OpenOptions,
   PreconfiguredSocket,
+  ReadyState,
+  Socket,
 } from '../conn.ts'
-import { isNodeEnv } from '../shared.ts'
 
-const createPost = await (async () => {
-  if (fetch != null) {
-    const headers = new Headers([['content-type', 'application/json']])
+class PseudoSocketImpl extends EventTarget implements PreconfiguredSocket {
+  readyState: ReadyState = 1
 
-    return (url: string, json: string) =>
-      new Promise<string>((onResolve, onReject) => {
-        globalThis
-          .fetch(url, {
-            method: 'POST',
-            body: json,
-            headers,
-          })
-          .then((r) => r.text().then(onResolve, onReject), onReject)
-      })
-  } else if (isNodeEnv) {
-    return (await import('../shims/node.ts')).httpPost
-  } else {
-    return () => {
-      throw new Error('[maria2 error] HTTP client implementation is missing')
-    }
+  constructor(
+    private readonly url: string,
+    private readonly __options?: Partial<OpenOptions>,
+    private readonly __headers: Record<string, string> = {},
+  ) {
+    super()
   }
-})()
 
-export interface CreateHTTP {
-  (url: Aria2RpcHTTPUrl): Socket
-  (url: Aria2RpcHTTPUrl, options: Partial<OpenOptions>): PreconfiguredSocket
+  close(): void {
+    this.readyState = 3
+  }
+
+  getOptions() {
+    return this.__options
+  }
+
+  addEventListener(...args: any[]): void {
+    // @ts-expect-error To impl PreconfiguredSocket type.
+    super.addEventListener(...args)
+  }
+
+  send(data: string): void {
+    fetch(this.url, {
+      method: 'POST',
+      headers: {
+        ...this.__headers,
+        'content-type': 'application/json',
+      },
+      body: data,
+    })
+      .then(r => r.text())
+      .then(data => this.dispatchEvent(new MessageEvent('message', { data })))
+  }
 }
 
 export type Aria2RpcHTTPUrl =
   | `${'http' | 'https'}://${string}:${number}/jsonrpc`
   | `${'http' | 'https'}://${string}/jsonrpc`
 
-export const createHTTP: CreateHTTP = (
+export function createHTTP(url: Aria2RpcHTTPUrl): Socket
+export function createHTTP(url: Aria2RpcHTTPUrl, options: Partial<OpenOptions>): PreconfiguredSocket
+export function createHTTP(
   url: Aria2RpcHTTPUrl,
-  options?: Partial<OpenOptions>
-) => {
-  return new (class extends EventTarget {
-    readyState: ReadyState = 1
-
-    close(): void {
-      this.readyState = 3
-    }
-
-    getOptions() {
-      return options
-    }
-
-    send(data: string): void {
-      createPost(url, data).then((data: string) => {
-        this.dispatchEvent(new MessageEvent('message', { data }))
-      })
-    }
-  })() as any
+  options?: Partial<OpenOptions>,
+  headers?: Record<string, string>,
+): Socket | PreconfiguredSocket {
+  return new PseudoSocketImpl(url, options, headers)
 }

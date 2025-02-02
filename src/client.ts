@@ -1,9 +1,5 @@
-import type { Disposable } from './types/disposable.ts'
-import type {
-  Aria2ClientNotificationParams,
-  Aria2ClientNotificationMethod,
-} from './types/notification.ts'
 import type { Conn } from './conn.ts'
+import type { Disposable } from './types/disposable.ts'
 import type {
   Aria2TellActiveParams,
   Aria2TellStatusListParams,
@@ -17,6 +13,10 @@ import type {
   Aria2SystemMethodCallMap,
   Aria2SystemMethodResultMap,
 } from './types/method.ts'
+import type {
+  Aria2ClientNotificationMethod,
+  Aria2ClientNotificationParams,
+} from './types/notification.ts'
 import type {
   Aria2SystemMulticallParams,
   Aria2SystemMulticallParamsToResult,

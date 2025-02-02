@@ -1,4 +1,4 @@
-import { type Disposable } from './types/disposable.ts'
+import type { Disposable } from './types/disposable.ts'
 
 export interface OpenOptions {
   secret?: string
@@ -30,7 +30,7 @@ export enum ReadyState {
 }
 
 export interface PreconfiguredSocket extends Socket {
-  getOptions(): Partial<OpenOptions>
+  getOptions: () => Partial<OpenOptions> | undefined
 }
 
 export interface Socket {
@@ -44,30 +44,27 @@ export interface Socket {
    */
   readyState: ReadyState
 
-  send(data: string): void
+  send: (data: string) => void
 
-  close(code?: number, reason?: string): void
+  close: (code?: number, reason?: string) => void
 
-  addEventListener(
+  addEventListener: ((
     type: 'message',
     listener: (event: { data: any }) => void,
     options?: AddEventListenerOptions
-  ): void
-  addEventListener(
+  ) => void) & ((
     type: 'open',
     listener: () => void,
     options?: AddEventListenerOptions
-  ): void
-  addEventListener(
+  ) => void) & ((
     type: 'error',
     listener: (error: any) => void,
     options?: AddEventListenerOptions
-  ): void
-  addEventListener(
+  ) => void) & ((
     type: 'close',
     listener: () => void,
     options?: AddEventListenerOptions
-  ): void
+  ) => void)
 }
 
 export interface SendRequestOptions {
@@ -87,14 +84,14 @@ export interface SendRequestOptions {
 }
 
 export interface Conn {
-  sendRequest<T>(options: SendRequestOptions, ...args: any[]): PromiseLike<T>
-  onNotification<T extends (...args: unknown[]) => void>(
+  sendRequest: <T>(options: SendRequestOptions, ...args: any[]) => PromiseLike<T>
+  onNotification: <T extends (...args: unknown[]) => void>(
     type: string,
     listener: T
-  ): Disposable<T>
+  ) => Disposable<T>
 
-  getSecret(): string | undefined
-  getSocket(): Socket
+  readonly secret: string | undefined
+  readonly socket: Socket
 }
 
 export interface Open {

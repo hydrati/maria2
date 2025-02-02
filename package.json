@@ -1,7 +1,21 @@
 {
   "name": "maria2",
+  "type": "module",
   "version": "0.3.4",
-  "description": "Simple RPC Library for aria2",
+  "description": "Simple and Light RPC Library for aria2",
+  "author": {
+    "name": "Hydration",
+    "url": "https://github.com/hydrati"
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/hydrati/maria2#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hydrati/maria2.git"
+  },
+  "bugs": {
+    "url": "https://github.com/hydrati/maria2/issues"
+  },
   "keywords": [
     "aria2",
     "download",
@@ -13,73 +27,31 @@
     "bittorrent",
     "typescript"
   ],
-  "homepage": "https://github.com/hydrati/maria2#readme",
-  "bugs": {
-    "url": "https://github.com/hydrati/maria2/issues"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/hydrati/maria2.git"
-  },
-  "license": "MIT",
-  "author": {
-    "name": "Hydration",
-    "url": "https://github.com/hydrati"
-  },
-  "type": "module",
-  "exports": {
-    ".": {
-      "default": "./dist/index.mjs",
-      "import": "./dist/index.mjs",
-      "types": "./dist/index.d.ts"
-    },
-    "./transport": {
-      "default": "./dist/transport.mjs",
-      "import": "./dist/transport.mjs",
-      "types": "./dist/transport.d.ts"
-    },
-    "./*": null
-  },
-  "module": "./dist/index.mjs",
+  "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "typesVersions": {
-    "*": {
-      "*": [
-        "./dist/*",
-        "./*"
-      ]
-    }
-  },
   "files": [
     "dist"
   ],
+  "engines": {
+    "node": ">= 22.5.0"
+  },
   "scripts": {
-    "build": "unbuild",
-    "denocheck": "deno check --no-npm ./index.ts && deno check --no-npm ./transport.ts",
-    "format": "prettier --write src/**/*.ts",
-    "release": "bumpp --commit --push --tag && pnpm publish",
+    "bundle": "pkgroll --minify --sourcemap --clean-dist",
+    "lint": "eslint .",
+    "release": "bumpp --commit --push --tag && bun publish",
     "test": "vitest",
     "typecheck": "tsc --noEmit",
-    "preversion": "pnpm typecheck && pnpm build"
-  },
-  "dependencies": {
-    "uuid": "^9.0.1",
-    "ws": "^8.18.0"
+    "preversion": "bun typecheck && bun bundle"
   },
   "devDependencies": {
-    "@types/node": "^20.14.12",
-    "@types/uuid": "^9.0.8",
-    "@types/ws": "^8.5.11",
-    "bumpp": "^9.4.1",
-    "prettier": "^3.3.3",
-    "typescript": "^5.5.4",
-    "unbuild": "^1.2.1",
-    "vite": "^5.3.5",
-    "vitest": "^0.34.6"
-  },
-  "packageManager": "pnpm@9.15.4",
-  "engines": {
-    "node": ">= 14.8.0"
+    "@antfu/eslint-config": "^4.1.1",
+    "@types/bun": "^1.2.2",
+    "bumpp": "^9.11.1",
+    "eslint": "^9.19.0",
+    "pkgroll": "^2.6.1",
+    "typescript": "^5.7.3",
+    "vite": "^6.0.11",
+    "vitest": "^3.0.4"
   },
   "publishConfig": {
     "access": "public",
