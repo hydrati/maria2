@@ -26,7 +26,7 @@ export const open: Open = async (
 ): Promise<Conn> => {
   const { onServerError, secret, timeout, openTimeout } = Object.assign(
     { timeout: 5000, openTimeout: 5000 },
-    (socket as PreconfiguredSocket)?.getOptions() ?? {},
+    (socket as PreconfiguredSocket)?.getOptions?.() ?? {},
     options,
   )
 
