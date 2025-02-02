@@ -11,7 +11,7 @@ class PseudoSocketImpl extends EventTarget implements PreconfiguredSocket {
   constructor(
     private readonly url: string,
     private readonly __options?: Partial<OpenOptions>,
-    private readonly __headers: Record<string, string> = {},
+    private readonly __headers?: Record<string, string>,
   ) {
     super()
   }
