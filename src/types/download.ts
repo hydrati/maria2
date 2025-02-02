@@ -553,15 +553,15 @@ export type Aria2UnpauseCall = Aria2ClientGidOpCall<'aria2.unpause'>
 
 export type Aria2UnpauseResult = RpcResult<Aria2DownloadGid>
 
-export type Aria2PauseAllCall = Aria2ClientGidOpCall<'aria2.pauseAll'>
+export type Aria2PauseAllCall = Aria2ServerVoidCall<'aria2.pauseAll'>
 
 export type Aria2PauseAllResult = Aria2ServerOpResult
 
-export type Aria2ForcePauseAllCall = Aria2ClientGidOpCall<'aria2.forcePauseAll'>
+export type Aria2ForcePauseAllCall = Aria2ServerVoidCall<'aria2.forcePauseAll'>
 
 export type Aria2ForcePauseAllResult = Aria2ServerOpResult
 
-export type Aria2UnpauseAllCall = Aria2ClientGidOpCall<'aria2.unpauseAll'>
+export type Aria2UnpauseAllCall = Aria2ServerVoidCall<'aria2.unpauseAll'>
 
 export type Aria2UnpauseAllResult = Aria2ServerOpResult
 
