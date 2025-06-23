@@ -12,22 +12,15 @@ Modern & Simple RPC Library for aria2.
 
 ## Getting Started
 
-- If you are using Deno, just import it.
-```ts
-import { aria2, open, system } from 'https://deno.land/x/maria2/index.ts'
-import { createHTTP, createWebSocket } from 'https://deno.land/x/maria2/transport.ts'
-```
-
-- If you are using Node.js, install this package.
+- Install
 ```sh
+bun i maria2
+
 pnpm i maria2
 
-# For Node.js *
-pnpm i ws
-pnpm i -D @types/ws # TypeScript Support
+yarn add maria2
 
-# For Node.js <v15.6.0, <v14.17.0
-pnpm i uuid
+npm i maria2
 ```
 
 - Run `aria2c` with RPC options, for example
@@ -37,38 +30,39 @@ aria2c --enable-rpc=true --rpc-listen-all=true --rpc-allow-origin-all=true --rpc
 
 - Connect by WebSocket
 ```ts
-import { aria2, open } from 'maria2'
+import { aria2, close, createWebSocket, open } from 'maria2'
 
-const conn = await open(
-  new WebSocket('ws://localhost:6800/jsonrpc')
-
-  // import { createWebSocket } from 'maria2/transport'
-  // createWebSocket('ws://localhost:6800/jsonrpc')
-)
+const conn = await open(createWebSocket('ws://localhost:6800/jsonrpc'))
 
 const version = await aria2.getVersion(conn)
+
+console.log(version)
+
+close(conn)
 ```
 
 - Connect by HTTP
 ```ts
-import { aria2, open } from 'maria2'
-import { createHTTP } from 'maria2/transport'
+import { aria2, close, createHTTP, open } from '.'
 
-const conn = await open(
-  createHTTP('http://localhost:6800/jsonrpc')
-)
+const conn = await open(createHTTP('ws://localhost:6800/jsonrpc'))
 
 const version = await aria2.getVersion(conn)
+
+console.log(version)
+
+close(conn)
 ```
 
 - Multicall
 ```ts
-import { open, system } from 'maria2'
+import { close, open, system } from 'maria2'
 
 const conn = await open(
   new WebSocket('ws://localhost:6800/jsonrpc')
 )
 
+// All typed
 const [result0, result1] = await system.multicall({
   methodName: 'aria2.getVersion',
   params: []
@@ -76,6 +70,8 @@ const [result0, result1] = await system.multicall({
   methodName: 'aria2.getGlobalStat',
   params: []
 })
+
+close(conn)
 ```
 
 ## Credits
@@ -83,4 +79,4 @@ const [result0, result1] = await system.multicall({
 - [L0serj3rry (@Cnotech)](https://github.com/Cnotech)
 
 ## License
-MIT License © 2023 [Hydration](https://github.com/hydrati)
+MIT License © 2023-present [Hydration](https://github.com/hydrati)
